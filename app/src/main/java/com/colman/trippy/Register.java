@@ -19,7 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class Register extends AppCompatActivity {
 
-    EditText mEmail, mPassword, mConfirmPassword;
+    EditText mEmail, mPassword, mFullName, mConfirmPassword;
     ProgressBar mProgressBar;
     Button mRegisterBtn;
     FirebaseAuth fAuth;
@@ -36,6 +36,7 @@ public class Register extends AppCompatActivity {
         mRegisterBtn = findViewById(R.id.registerButton);
         mProgressBar = findViewById(R.id.progressBar);
         mLoginLink = findViewById(R.id.login_now_text);
+        mFullName = findViewById(R.id.full_name_text);
         fAuth = FirebaseAuth.getInstance();
 
         mLoginLink.setOnClickListener(view -> startActivity(new Intent(getApplicationContext(), Login.class)));
@@ -60,6 +61,7 @@ public class Register extends AppCompatActivity {
             String email = mEmail.getText().toString().trim();
             String password = mPassword.getText().toString().trim();
             String confirmPassword = mConfirmPassword.getText().toString().trim();
+            String fullName = mFullName.getText().toString().trim();
 
             if (TextUtils.isEmpty(email)) {
                 mEmail.setError("Email is Required.");
@@ -81,7 +83,7 @@ public class Register extends AppCompatActivity {
                 return;
             }
 
-            User user = new User(email, password);
+            User user = new User(email, password, fullName);
             mProgressBar.setVisibility(View.VISIBLE);
             UserModel.instance.registerUser(user, new UserModel.AddUserListener() {
                 @Override
