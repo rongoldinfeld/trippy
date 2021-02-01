@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +19,7 @@ public class Login extends AppCompatActivity {
 
     EditText mEmail, mPassword;
     Button mButton;
+    TextView mRegisterLink;
     ProgressBar mProgressBar;
 
     @Override
@@ -29,6 +31,9 @@ public class Login extends AppCompatActivity {
         mPassword = findViewById(R.id.login_password_input);
         mButton = findViewById(R.id.login_button);
         mProgressBar = findViewById(R.id.login_progress_bar);
+        mRegisterLink = findViewById(R.id.register_now_text);
+
+        mRegisterLink.setOnClickListener(view -> startActivity(new Intent(getApplicationContext(), Register.class)));
 
         UserModel.instance.isLoggedIn(new UserModel.IsLoggedInListener() {
             @Override

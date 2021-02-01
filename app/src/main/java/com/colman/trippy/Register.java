@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +23,7 @@ public class Register extends AppCompatActivity {
     ProgressBar mProgressBar;
     Button mRegisterBtn;
     FirebaseAuth fAuth;
+    TextView mLoginLink;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,13 +35,19 @@ public class Register extends AppCompatActivity {
         mConfirmPassword = findViewById(R.id.confirmPassword);
         mRegisterBtn = findViewById(R.id.registerButton);
         mProgressBar = findViewById(R.id.progressBar);
+        mLoginLink = findViewById(R.id.login_now_text);
         fAuth = FirebaseAuth.getInstance();
+
+        mLoginLink.setOnClickListener(view -> startActivity(new Intent(getApplicationContext(), Login.class)));
 
         UserModel.instance.isLoggedIn(new UserModel.IsLoggedInListener() {
             @Override
             public void onComplete(Boolean result) {
-                Toast.makeText(Register.this, "Already logged in!", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                if (result) {
+                    Toast.makeText(Register.this, "Already logged in!", Toast.LENGTH_SHORT).show();
+                    UserModel.instance.logout();
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                }
             }
 
             @Override

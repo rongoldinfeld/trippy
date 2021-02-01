@@ -25,11 +25,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:text="@string/log_in"
         android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/app_name"
-        tools:text="Login now!" />
+        app:layout_constraintTop_toBottomOf="@+id/app_name" />
 
     <EditText
         android:id="@+id/login_email_input"
@@ -69,13 +69,14 @@
         style="@style/PrimaryButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/log_in"
         app:backgroundTint="#C77940"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_password_input"
-        app:layout_constraintVertical_bias="0.25"
-        tools:text="@string/log_in" />
+        app:layout_constraintVertical_bias="0.357" />
 
     <ProgressBar
         android:id="@+id/login_progress_bar"
@@ -90,4 +91,27 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_password_input" />
+
+    <TextView
+        android:focusable="false"
+        android:id="@+id/register_now_text"
+        style="@style/App_EditTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:fontFamily="@font/montserrat"
+        android:inputType="none"
+        android:lineSpacingExtra="8sp"
+        android:singleLine="true"
+        android:text="Don't have a user? Register here!"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="#000000"
+        android:textSize="15sp"
+        android:typeface="monospace"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/login_button"
+        app:layout_constraintVertical_bias="0.286" />
 </androidx.constraintlayout.widget.ConstraintLayout>
