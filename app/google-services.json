@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "331254438281",
+    "firebase_url": "https://trippy-b2f76.firebaseio.com",
+    "project_id": "trippy-b2f76",
+    "storage_bucket": "trippy-b2f76.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331254438281:android:202f482c34e7ca9a36e958",
+        "android_client_info": {
+          "package_name": "com.colman.trippy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "331254438281-hk3o7buo6aqdtb2h1vahai9jo8tccnkq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDt0Ysd_eKGnJx40iMC_NHnoICV1-ztgJ4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "331254438281-hk3o7buo6aqdtb2h1vahai9jo8tccnkq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
