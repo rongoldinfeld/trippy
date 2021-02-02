@@ -13,5 +13,14 @@
         android:id="@+id/userProfileFragment"
         android:name="com.colman.trippy.UserProfileFragment"
         android:label="fragment_user_profile"
-        tools:layout="@layout/fragment_user_profile" /><action android:id="@+id/action_global_userProfileFragment" app:destination="@id/userProfileFragment"/><action android:id="@+id/action_global_tripSearchFragment" app:destination="@id/tripSearchFragment"/>
+        tools:layout="@layout/fragment_user_profile" >
+        <action
+            android:id="@+id/action_userProfile_to_createTrip"
+            app:destination="@id/createTrip" />
+    </fragment><action android:id="@+id/action_global_userProfileFragment" app:destination="@id/userProfileFragment"/><action android:id="@+id/action_global_tripSearchFragment" app:destination="@id/tripSearchFragment"/>
+    <fragment
+        android:id="@+id/createTrip"
+        android:name="com.colman.trippy.CreateTrip"
+        android:label="fragment_create_trip"
+        tools:layout="@layout/fragment_create_trip" />
 </navigation>

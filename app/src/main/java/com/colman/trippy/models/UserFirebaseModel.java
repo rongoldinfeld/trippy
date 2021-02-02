@@ -66,7 +66,7 @@ public class UserFirebaseModel {
 
         String userId = firebaseAuth.getCurrentUser().getUid();
         DocumentReference documentReference = fireStore.collection("users").document(userId);
-        Map<String, Object> userToInsert = new HashMap();
+        HashMap<String, String> userToInsert = new HashMap<String, String>();
         userToInsert.put("fullName", user.getFullName());
         userToInsert.put("email", user.getEmail());
         documentReference.set(userToInsert).addOnSuccessListener(aVoid -> {
