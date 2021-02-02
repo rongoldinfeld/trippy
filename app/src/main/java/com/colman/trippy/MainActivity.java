@@ -3,7 +3,6 @@ package com.colman.trippy;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Window;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -19,15 +18,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Remove title bar
-//        this.requestWindowFeature(Window.FEATURE);
-//        actionBar
-        //Remove notification bar
-//        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_home_black_24dp);
-//        getActionBar().setHomeButtonEnabled(true);
-//        getActionBar().setDisplayHomeAsUpEnabled(true);
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.app_main_toolbar);
+        Toolbar myToolbar = findViewById(R.id.app_main_toolbar);
         setSupportActionBar(myToolbar);
 
         UserModel.instance.isLoggedIn(new UserModel.IsLoggedInListener() {
