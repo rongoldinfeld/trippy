@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/userProfileFragment">
+    <fragment
+        android:id="@+id/tripSearchFragment"
+        android:name="com.colman.trippy.TripSearchFragment"
+        android:label="fragment_trip_search"
+        tools:layout="@layout/fragment_trip_search" />
+    <fragment
+        android:id="@+id/userProfileFragment"
+        android:name="com.colman.trippy.UserProfileFragment"
+        android:label="fragment_user_profile"
+        tools:layout="@layout/fragment_user_profile" /><action android:id="@+id/action_global_userProfileFragment" app:destination="@id/userProfileFragment"/><action android:id="@+id/action_global_tripSearchFragment" app:destination="@id/tripSearchFragment"/>
+</navigation>

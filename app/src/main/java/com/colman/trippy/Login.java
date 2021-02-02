@@ -3,7 +3,6 @@ package com.colman.trippy;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,21 +33,6 @@ public class Login extends AppCompatActivity {
         mRegisterLink = findViewById(R.id.register_now_text);
 
         mRegisterLink.setOnClickListener(view -> startActivity(new Intent(getApplicationContext(), Register.class)));
-
-        UserModel.instance.isLoggedIn(new UserModel.IsLoggedInListener() {
-            @Override
-            public void onComplete(Boolean result) {
-                if (result) {
-                    Toast.makeText(Login.this, "Already logged in!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                }
-            }
-
-            @Override
-            public void onFailure(String message) {
-                Log.d("TRIPLOG", "isLoggedIn in register, failed with reason: " + message);
-            }
-        });
 
         mButton.setOnClickListener(view -> {
             String email = mEmail.getText().toString().trim();
