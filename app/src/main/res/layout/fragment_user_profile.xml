@@ -10,7 +10,7 @@
 
     <fragment
         android:id="@+id/add_trip_fragment"
-        android:name="com.colman.trippy.AddTripFragment"
+        android:name="com.colman.trippy.AddTripButtonFragment"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
