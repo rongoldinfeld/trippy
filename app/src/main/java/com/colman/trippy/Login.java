@@ -40,7 +40,6 @@ public class Login extends AppCompatActivity {
             public void onComplete(Boolean result) {
                 if (result) {
                     Toast.makeText(Login.this, "Already logged in!", Toast.LENGTH_SHORT).show();
-                    UserModel.instance.logout();
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 }
             }
