@@ -1,5 +1,7 @@
 package com.colman.trippy.models;
 
+import com.colman.trippy.AppConsts;
+
 public class UserModel {
     public final static UserModel instance = new UserModel();
 
@@ -8,15 +10,7 @@ public class UserModel {
     private UserModel() {
     }
 
-    public interface Listener<T> {
-
-        void onComplete(T result);
-
-        void onFailure(String message);
-
-    }
-
-    public interface AddUserListener extends Listener<User> {
+    public interface AddUserListener extends AppConsts.Listener<User> {
 
     }
 
@@ -25,7 +19,7 @@ public class UserModel {
     }
 
 
-    public interface LoginUserListener extends Listener<Boolean> {
+    public interface LoginUserListener extends AppConsts.Listener<Boolean> {
 
     }
 
@@ -37,7 +31,7 @@ public class UserModel {
         modelFirebase.logout();
     }
 
-    public interface IsLoggedInListener extends Listener<Boolean> {
+    public interface IsLoggedInListener extends AppConsts.Listener<Boolean> {
     }
 
     public void isLoggedIn(IsLoggedInListener listener) {

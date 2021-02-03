@@ -2,12 +2,12 @@ package com.colman.trippy.models;
 
 import android.util.Log;
 
+import com.colman.trippy.AppConsts;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class UserFirebaseModel {
     FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
@@ -17,7 +17,7 @@ public class UserFirebaseModel {
         firebaseAuth.createUserWithEmailAndPassword(user.getEmail(), user.getPassword()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Log.d("TRIPLOG", "register successful" + user.getEmail());
-                this.insertUser(user, new UserModel.Listener<Boolean>() {
+                this.insertUser(user, new AppConsts.Listener<Boolean>() {
                     @Override
                     public void onComplete(Boolean result) {
                         listener.onComplete(user);
@@ -58,7 +58,7 @@ public class UserFirebaseModel {
         Log.d("TRIPLOG", "User logged out");
     }
 
-    private void insertUser(User user, UserModel.Listener<Boolean> listener) {
+    private void insertUser(User user, AppConsts.Listener<Boolean> listener) {
         if (firebaseAuth.getCurrentUser() == null) {
             Log.d("TRIPLOG", "Tried to insert user when firebase auth current user returned null");
             return;

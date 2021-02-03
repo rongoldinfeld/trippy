@@ -1,14 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout3"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CreateTrip">
+    tools:context=".CreateTripFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <Button
+        android:id="@+id/add_location_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/add_location"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/locations_rv"
+        app:layout_constraintTop_toBottomOf="@+id/locations_rv"
+        app:layout_constraintVertical_bias="0.064" />
 
-</FrameLayout>
+    <EditText
+        android:id="@+id/trip_from_date"
+        android:layout_width="0dp"
+        android:layout_height="59dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:focusable="false"
+        android:hint="From"
+        app:layout_constraintEnd_toStartOf="@+id/trip_until_date"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="@+id/trip_name_text"
+        app:layout_constraintTop_toBottomOf="@+id/trip_name_text" />
+
+    <EditText
+        android:id="@+id/trip_until_date"
+        android:layout_width="0dp"
+        android:layout_height="59dp"
+        android:ems="10"
+        android:focusable="false"
+        android:hint="Until"
+        app:layout_constraintBottom_toBottomOf="@+id/trip_from_date"
+        app:layout_constraintEnd_toEndOf="@+id/trip_name_text"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/trip_from_date"
+        app:layout_constraintTop_toTopOf="@+id/trip_from_date"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <EditText
+        android:id="@+id/trip_name_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:ems="14"
+        android:hint="Enter trip name"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/locations_rv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:paddingBottom="4dp"
+        app:layout_constraintStart_toStartOf="@+id/trip_from_date"
+        app:layout_constraintTop_toBottomOf="@+id/trip_from_date" />
+</androidx.constraintlayout.widget.ConstraintLayout>

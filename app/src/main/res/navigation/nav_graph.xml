@@ -20,7 +20,7 @@
     </fragment><action android:id="@+id/action_global_userProfileFragment" app:destination="@id/userProfileFragment"/><action android:id="@+id/action_global_tripSearchFragment" app:destination="@id/tripSearchFragment"/>
     <fragment
         android:id="@+id/createTrip"
-        android:name="com.colman.trippy.CreateTrip"
+        android:name="com.colman.trippy.CreateTripFragment"
         android:label="fragment_create_trip"
         tools:layout="@layout/fragment_create_trip" />
 </navigation>

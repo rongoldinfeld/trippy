@@ -7,4 +7,6 @@
     <string name="profile_navigation_title">Profile</string>
     <string name="search_navigation">Search</string>
     <string name="add_trip">Add Trip</string>
+    <string name="add_location">Add location</string>
+    <string name="save">Save</string>
 </resources>
