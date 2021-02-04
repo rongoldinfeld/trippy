@@ -6,7 +6,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/layout_border"
-    tools:context=".AddTripButtonFragment">
+    tools:context=".View.Home.Profile.AddTripButtonFragment">
 
 
     <ImageView

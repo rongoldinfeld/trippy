@@ -1,4 +1,4 @@
-package com.colman.trippy;
+package com.colman.trippy.View.CreateTrip;
 
 import android.app.DatePickerDialog;
 import android.text.Editable;
@@ -10,7 +10,8 @@ import android.widget.EditText;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.colman.trippy.models.Location;
+import com.colman.trippy.Model.Location;
+import com.colman.trippy.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;

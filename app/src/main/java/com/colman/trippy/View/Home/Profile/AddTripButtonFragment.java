@@ -1,4 +1,4 @@
-package com.colman.trippy;
+package com.colman.trippy.View.Home.Profile;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+
+import com.colman.trippy.R;
 
 public class AddTripButtonFragment extends Fragment {
 

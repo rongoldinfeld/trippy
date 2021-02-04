@@ -6,11 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_color"
-    tools:context=".UserProfileFragment">
+    tools:context=".View.Home.Profile.UserProfileFragment">
 
     <fragment
         android:id="@+id/add_trip_fragment"
-        android:name="com.colman.trippy.AddTripButtonFragment"
+        android:name="com.colman.trippy.View.Home.Profile.AddTripButtonFragment"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"

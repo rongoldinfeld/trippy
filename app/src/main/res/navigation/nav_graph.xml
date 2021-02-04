@@ -6,12 +6,12 @@
     app:startDestination="@id/userProfileFragment">
     <fragment
         android:id="@+id/tripSearchFragment"
-        android:name="com.colman.trippy.TripSearchFragment"
+        android:name="com.colman.trippy.View.Home.Search.TripSearchFragment"
         android:label="fragment_trip_search"
         tools:layout="@layout/fragment_trip_search" />
     <fragment
         android:id="@+id/userProfileFragment"
-        android:name="com.colman.trippy.UserProfileFragment"
+        android:name="com.colman.trippy.View.Home.Profile.UserProfileFragment"
         android:label="fragment_user_profile"
         tools:layout="@layout/fragment_user_profile" >
         <action
@@ -20,7 +20,7 @@
     </fragment><action android:id="@+id/action_global_userProfileFragment" app:destination="@id/userProfileFragment"/><action android:id="@+id/action_global_tripSearchFragment" app:destination="@id/tripSearchFragment"/>
     <fragment
         android:id="@+id/createTrip"
-        android:name="com.colman.trippy.CreateTripFragment"
+        android:name="com.colman.trippy.View.CreateTrip.CreateTripFragment"
         android:label="fragment_create_trip"
         tools:layout="@layout/fragment_create_trip" />
 </navigation>

@@ -1,8 +1,12 @@
-package com.colman.trippy.models;
+package com.colman.trippy.Firebase;
 
 import android.util.Log;
 
 import com.colman.trippy.AppConsts;
+import com.colman.trippy.Model.Location;
+import com.colman.trippy.Model.Trip;
+import com.colman.trippy.Model.User;
+import com.colman.trippy.Model.UserModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;

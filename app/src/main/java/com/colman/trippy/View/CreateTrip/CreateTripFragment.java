@@ -1,4 +1,4 @@
-package com.colman.trippy;
+package com.colman.trippy.View.CreateTrip;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
@@ -17,7 +17,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.colman.trippy.models.TripModel;
+import com.colman.trippy.AppConsts;
+import com.colman.trippy.Model.TripModel;
+import com.colman.trippy.R;
 
 import java.util.Calendar;
 

@@ -1,4 +1,4 @@
-package com.colman.trippy;
+package com.colman.trippy.View.Home;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,7 +9,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import com.colman.trippy.models.UserModel;
+import com.colman.trippy.Model.UserModel;
+import com.colman.trippy.R;
+import com.colman.trippy.View.Login;
 import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity {

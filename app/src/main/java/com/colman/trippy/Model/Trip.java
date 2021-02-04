@@ -1,4 +1,4 @@
-package com.colman.trippy.models;
+package com.colman.trippy.Model;
 
 import java.util.ArrayList;
 

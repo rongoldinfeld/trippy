@@ -1,6 +1,7 @@
-package com.colman.trippy.models;
+package com.colman.trippy.Model;
 
 import com.colman.trippy.AppConsts;
+import com.colman.trippy.Firebase.UserFirebaseModel;
 
 public class UserModel {
     public final static UserModel instance = new UserModel();

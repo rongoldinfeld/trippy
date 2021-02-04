@@ -1,4 +1,4 @@
-package com.colman.trippy;
+package com.colman.trippy.View;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,8 +12,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.colman.trippy.models.User;
-import com.colman.trippy.models.UserModel;
+import com.colman.trippy.Model.User;
+import com.colman.trippy.Model.UserModel;
+import com.colman.trippy.R;
+import com.colman.trippy.View.Home.MainActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class Register extends AppCompatActivity {
