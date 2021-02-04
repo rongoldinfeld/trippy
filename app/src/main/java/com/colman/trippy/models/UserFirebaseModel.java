@@ -5,8 +5,11 @@ import android.util.Log;
 import com.colman.trippy.AppConsts;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class UserFirebaseModel {
@@ -66,9 +69,10 @@ public class UserFirebaseModel {
 
         String userId = firebaseAuth.getCurrentUser().getUid();
         DocumentReference documentReference = fireStore.collection("users").document(userId);
-        HashMap<String, String> userToInsert = new HashMap<String, String>();
+        HashMap<String, Object> userToInsert = new HashMap<>();
         userToInsert.put("fullName", user.getFullName());
         userToInsert.put("email", user.getEmail());
+        userToInsert.put("trips", new ArrayList<Location>());
         documentReference.set(userToInsert).addOnSuccessListener(aVoid -> {
             Log.d("TRIPLOG", "User inserted to user collection with id" + userId);
             listener.onComplete(true);
@@ -76,5 +80,30 @@ public class UserFirebaseModel {
             Log.d("TRIPLOG", "Error while inserting to users collection" + e.getMessage());
             listener.onFailure(e.getMessage());
         });
+    }
+
+    public void getCurrentUserProfile(AppConsts.Listener<User> listener) {
+        String userId = firebaseAuth.getCurrentUser().getUid();
+        DocumentReference currentUserReference = fireStore.collection("users").document(userId);
+        currentUserReference.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    Log.d("TRIPLOG", "DocumentSnapshot data: " + document.getData());
+                    User user = document.toObject(User.class);
+                    listener.onComplete(user);
+                } else {
+                    Log.d("TRIPLOG", "No such document with id " + userId);
+                }
+            } else {
+                Log.d("TRIPLOG", "get user with id (" + userId + ") failed with ", task.getException());
+            }
+        });
+    }
+
+    public void insertTrip(Trip trip, AppConsts.Listener<Boolean> booleanListener) {
+        String userId = firebaseAuth.getCurrentUser().getUid();
+        DocumentReference currentUserRef = fireStore.collection("users").document(userId);
+        currentUserRef.update("trips", FieldValue.arrayUnion(trip)).addOnCompleteListener(task -> booleanListener.onComplete(task.isSuccessful()));
     }
 }

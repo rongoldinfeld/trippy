@@ -10,6 +10,10 @@ public class UserModel {
     private UserModel() {
     }
 
+    public void getCurrentUser(AppConsts.Listener<User> listener) {
+        modelFirebase.getCurrentUserProfile(listener);
+    }
+
     public interface AddUserListener extends AppConsts.Listener<User> {
 
     }
@@ -36,6 +40,10 @@ public class UserModel {
 
     public void isLoggedIn(IsLoggedInListener listener) {
         modelFirebase.isLoggedIn(listener);
+    }
+
+    public void insertTrip(Trip trip, AppConsts.Listener<Boolean> booleanListener) {
+        modelFirebase.insertTrip(trip, booleanListener);
     }
 
 }
