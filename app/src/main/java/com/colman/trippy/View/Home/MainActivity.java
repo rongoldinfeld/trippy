@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -20,8 +19,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Toolbar myToolbar = findViewById(R.id.app_main_toolbar);
-        setSupportActionBar(myToolbar);
 
         UserModel.instance.isLoggedIn(new UserModel.IsLoggedInListener() {
             @Override

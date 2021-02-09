@@ -20,4 +20,8 @@ public final class AppConsts {
         void onFailure(String message);
 
     }
+
+    public interface OnCompleteListener {
+        void onComplete();
+    }
 }

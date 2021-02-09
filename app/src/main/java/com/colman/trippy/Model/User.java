@@ -1,9 +1,12 @@
 package com.colman.trippy.Model;
 
+import java.util.ArrayList;
+
 public class User {
     private String email;
     private String password;
     private String fullName;
+    private ArrayList<Trip> trips;
 
     public User() {
     }
@@ -36,5 +39,13 @@ public class User {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public ArrayList<Trip> getTrips() {
+        return trips;
+    }
+
+    public void setTrips(ArrayList<Trip> trips) {
+        this.trips = trips;
     }
 }

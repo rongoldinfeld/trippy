@@ -8,4 +8,5 @@
     <string name="add_trip">Add Trip</string>
     <string name="add_location">Add location</string>
     <string name="save">Save</string>
+    <string name="toggle_private">Private</string>
 </resources>

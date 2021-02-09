@@ -104,10 +104,4 @@ public class UserFirebaseModel {
             }
         });
     }
-
-    public void insertTrip(Trip trip, AppConsts.Listener<Boolean> booleanListener) {
-        String userId = firebaseAuth.getCurrentUser().getUid();
-        DocumentReference currentUserRef = fireStore.collection("users").document(userId);
-        currentUserRef.update("trips", FieldValue.arrayUnion(trip)).addOnCompleteListener(task -> booleanListener.onComplete(task.isSuccessful()));
-    }
 }

@@ -101,8 +101,8 @@ public class LocationsListAdapter extends RecyclerView.Adapter<LocationsListAdap
         return locationDataSet.size();
     }
 
-    public void addNewLocation() {
-        locationDataSet.add(Location.generateEmptyLocation());
+    public void addNewEmptyLocation() {
+        locationDataSet.add(new Location(minDate, ""));
     }
 
     public void setMinDate(long date) {

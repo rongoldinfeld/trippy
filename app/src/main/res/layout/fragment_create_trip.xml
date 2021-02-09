@@ -25,12 +25,12 @@
         android:layout_width="0dp"
         android:layout_height="59dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="12dp"
         android:ems="10"
         android:focusable="false"
         android:hint="From"
         app:layout_constraintEnd_toStartOf="@+id/trip_until_date"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="@+id/trip_name_text"
         app:layout_constraintTop_toBottomOf="@+id/trip_name_text" />
@@ -39,29 +39,46 @@
         android:id="@+id/trip_until_date"
         android:layout_width="0dp"
         android:layout_height="59dp"
+        android:layout_marginStart="13dp"
         android:ems="10"
         android:focusable="false"
         android:hint="Until"
         app:layout_constraintBottom_toBottomOf="@+id/trip_from_date"
-        app:layout_constraintEnd_toEndOf="@+id/trip_name_text"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintEnd_toEndOf="@+id/save_button"
         app:layout_constraintStart_toEndOf="@+id/trip_from_date"
         app:layout_constraintTop_toTopOf="@+id/trip_from_date"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.0" />
+
 
     <EditText
         android:id="@+id/trip_name_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
+        android:layout_width="168dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="20dp"
+        android:background="@null"
         android:ems="14"
         android:hint="Enter trip name"
         android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/private_switch"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/save_button"
+        android:layout_width="43dp"
+        android:layout_height="44dp"
+        android:layout_marginEnd="32dp"
+        android:clickable="true"
+        android:src="@drawable/ic_save"
+        app:layout_constraintBottom_toBottomOf="@+id/private_switch"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/private_switch"
+        app:layout_constraintTop_toTopOf="@+id/private_switch"
+        app:layout_constraintVertical_bias="0.0" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/locations_rv"
@@ -71,4 +88,19 @@
         android:paddingBottom="4dp"
         app:layout_constraintStart_toStartOf="@+id/trip_from_date"
         app:layout_constraintTop_toBottomOf="@+id/trip_from_date" />
+
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/private_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/toggle_private"
+        android:textColor="@android:color/secondary_text_dark"
+        app:layout_constraintBottom_toBottomOf="@+id/trip_name_text"
+        app:layout_constraintEnd_toStartOf="@+id/save_button"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/trip_name_text"
+        app:layout_constraintTop_toTopOf="@+id/trip_name_text"
+        app:layout_constraintVertical_bias="0.0" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

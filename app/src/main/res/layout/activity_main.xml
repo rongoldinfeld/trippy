@@ -7,21 +7,8 @@
     android:layout_height="match_parent"
     tools:context=".View.Home.MainActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/app_main_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/primary_color"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:navigationIcon="@drawable/ic_app_logo_45dp"
-        app:title="@string/app_name" />
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="0dp"
@@ -30,7 +17,7 @@
         app:layout_constraintBottom_toTopOf="@+id/app_tab_layout"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/app_main_toolbar"
+        app:layout_constraintTop_toTopOf="parent"
         app:navGraph="@navigation/nav_graph" />
 
     <com.google.android.material.tabs.TabLayout

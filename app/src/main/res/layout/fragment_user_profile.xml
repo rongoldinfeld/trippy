@@ -8,6 +8,35 @@
     android:background="@color/background_color"
     tools:context=".View.Home.Profile.UserProfileFragment">
 
+    <ProgressBar
+        android:id="@+id/trip_list_progress_bar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/swiperefresh"
+        app:layout_constraintEnd_toEndOf="@+id/swiperefresh"
+        app:layout_constraintStart_toStartOf="@+id/swiperefresh"
+        app:layout_constraintTop_toTopOf="@+id/swiperefresh" />
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swiperefresh"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/add_trip_fragment"
+        app:layout_constraintStart_toStartOf="@+id/add_trip_fragment"
+        app:layout_constraintTop_toBottomOf="@+id/add_trip_fragment">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/user_trips_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
     <fragment
         android:id="@+id/add_trip_fragment"
         android:name="com.colman.trippy.View.Home.Profile.AddTripButtonFragment"
@@ -20,4 +49,5 @@
         app:layout_constraintHorizontal_bias="0.43"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

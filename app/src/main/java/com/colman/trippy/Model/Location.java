@@ -11,6 +11,10 @@ public class Location {
         this.locationName = locationName;
     }
 
+    public Location() {
+
+    }
+
     public long getDateVisited() {
         return dateVisited;
     }
@@ -25,18 +29,5 @@ public class Location {
 
     public void setLocationName(String locationName) {
         this.locationName = locationName;
-    }
-
-    public static ArrayList<Location> createLocationList(int num) {
-        ArrayList<Location> arr = new ArrayList<>();
-        for (int i = 0; i < num; i++) {
-            arr.add(new Location(System.currentTimeMillis(), "Israel" + i));
-        }
-
-        return arr;
-    }
-
-    public static Location generateEmptyLocation() {
-        return new Location(0L, "");
     }
 }
