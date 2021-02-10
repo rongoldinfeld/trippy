@@ -63,17 +63,21 @@ public class TripModel {
         });
     }
 
-    public void addTrip(Trip trip) {
+    public void addTrip(Trip trip, AppConsts.OnCompleteListener listener) {
         tripFirebaseModel.addTrip(trip, new AppConsts.Listener<Boolean>() {
             @Override
             public void onComplete(Boolean result) {
                 Log.d("TRIPLOG", "Adding trip succeed with result: " + result.toString());
-                refreshTrips(() -> Log.d("TRIPLOG", "Refreshing trips after adding, succeeded"));
+                refreshTrips(() -> {
+                    Log.d("TRIPLOG", "Refreshing trips after adding, succeeded");
+                    listener.onComplete();
+                });
             }
 
             @Override
             public void onFailure(String message) {
                 Log.d("TRIPLOG", "Failed to add trip. Error: " + message);
+                listener.onComplete();
             }
         });
     }
