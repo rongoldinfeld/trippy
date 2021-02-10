@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,7 +31,7 @@ public class CreateTripFragment extends Fragment {
     EditText mTripName;
     EditText fromDatePicker;
     EditText untilDatePicker;
-    ImageView save_trip_button;
+    ImageView saveTripBtn;
     Button addLocationButton;
     SwitchMaterial privateSwitch;
     Calendar calendar = Calendar.getInstance();
@@ -50,7 +51,7 @@ public class CreateTripFragment extends Fragment {
         fromDatePicker = view.findViewById(R.id.trip_from_date);
         untilDatePicker = view.findViewById(R.id.trip_until_date);
         privateSwitch = view.findViewById(R.id.private_switch);
-        save_trip_button = view.findViewById(R.id.save_button);
+        saveTripBtn = view.findViewById(R.id.save_button);
 
         LocationsListAdapter adapter = new LocationsListAdapter();
         fromDatePicker.setOnClickListener(view1 -> showDatePickerDialog(fromDatePicker, null, (long date) -> fromDate = date));
@@ -66,7 +67,7 @@ public class CreateTripFragment extends Fragment {
             }
         });
 
-        save_trip_button.setOnClickListener(view12 -> {
+        saveTripBtn.setOnClickListener(view12 -> {
 
             if (mTripName.getText().toString().trim().length() == 0) {
                 mTripName.setError("You must enter trip name!");
@@ -89,7 +90,7 @@ public class CreateTripFragment extends Fragment {
                     fromDate,
                     untilDate,
                     privateSwitch.isChecked(),
-                    adapter.getLocations()));
+                    adapter.getLocations()), () -> Navigation.findNavController(saveTripBtn).popBackStack());
         });
 
         handleRecyclerView(view, adapter);
