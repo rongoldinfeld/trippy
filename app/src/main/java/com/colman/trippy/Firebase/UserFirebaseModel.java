@@ -50,8 +50,9 @@ public class UserFirebaseModel {
                 listener.onComplete(true);
             }
             if (task.getException() != null) {
-                Log.d("TRIPLOG", "Login failed" + email);
-                listener.onFailure(task.getException().getMessage());
+                String message = task.getException().getMessage();
+                Log.d("TRIPLOG", "Login failed for email: " + email + " reason: " + message);
+                listener.onFailure(message);
             }
         });
     }
