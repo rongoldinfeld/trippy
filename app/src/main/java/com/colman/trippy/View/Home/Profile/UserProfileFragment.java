@@ -1,5 +1,6 @@
 package com.colman.trippy.View.Home.Profile;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,18 +11,23 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.colman.trippy.AppConsts;
 import com.colman.trippy.Model.Trip;
 import com.colman.trippy.Model.TripModel;
 import com.colman.trippy.R;
 import com.colman.trippy.ViewModel.TripViewModel;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.colman.trippy.AppConsts.sdf;
 
 public class UserProfileFragment extends Fragment {
     TripViewModel viewModel;
@@ -94,10 +100,17 @@ public class UserProfileFragment extends Fragment {
             return new TripItemViewHolder(view);
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void onBindViewHolder(@NonNull TripItemViewHolder holder, int position) {
             Trip t = viewModel.getTripList().getValue().get(position);
+            String fromDate = sdf.format(t.getFromDate());
+            String untilDate = sdf.format(t.getUntilDate());
+            String participants = t.getParticipantsEmails().stream().collect(Collectors.joining(","));
+
             holder.tripName.setText(t.getName());
+            holder.dates.setText(fromDate + " - " + untilDate);
+            holder.participants.setText(participants);
         }
 
         @Override
@@ -110,10 +123,14 @@ public class UserProfileFragment extends Fragment {
 
         public class TripItemViewHolder extends RecyclerView.ViewHolder {
             TextView tripName;
+            TextView dates;
+            TextView participants;
 
             public TripItemViewHolder(View itemView) {
                 super(itemView);
                 tripName = itemView.findViewById(R.id.trip_name);
+                dates = itemView.findViewById(R.id.dates_text);
+                participants = itemView.findViewById(R.id.participants_text);
             }
         }
     }
