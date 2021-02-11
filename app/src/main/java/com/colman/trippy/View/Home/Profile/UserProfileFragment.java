@@ -1,5 +1,6 @@
 package com.colman.trippy.View.Home.Profile;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -21,7 +23,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.colman.trippy.AppConsts;
 import com.colman.trippy.Model.Trip;
 import com.colman.trippy.Model.TripModel;
+import com.colman.trippy.Model.UserModel;
 import com.colman.trippy.R;
+import com.colman.trippy.View.Login;
 import com.colman.trippy.ViewModel.TripViewModel;
 
 import java.util.List;
@@ -31,6 +35,7 @@ import static com.colman.trippy.AppConsts.sdf;
 
 public class UserProfileFragment extends Fragment {
     TripViewModel viewModel;
+    ImageView logoutButton;
 
     ProgressBar pb;
     SwipeRefreshLayout sref;
@@ -40,7 +45,7 @@ public class UserProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_user_profile, container, false);
-
+        logoutButton = view.findViewById(R.id.logout_image);
         viewModel = new ViewModelProvider(this).get(TripViewModel.class);
         RecyclerView rv = view.findViewById(R.id.user_trips_list);
         UserTripListAdapter adapter = new UserTripListAdapter();
@@ -77,6 +82,11 @@ public class UserProfileFragment extends Fragment {
             public void onChanged(List<Trip> trips) {
                 adapter.notifyDataSetChanged();
             }
+        });
+
+        logoutButton.setOnClickListener(imageView -> {
+            UserModel.instance.logout();
+            startActivity(new Intent(getContext(), Login.class));
         });
 
         return view;
