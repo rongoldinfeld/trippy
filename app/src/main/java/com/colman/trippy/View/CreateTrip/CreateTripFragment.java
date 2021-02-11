@@ -8,9 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -21,7 +24,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.colman.trippy.AppConsts;
 import com.colman.trippy.Model.Trip;
 import com.colman.trippy.Model.TripModel;
+import com.colman.trippy.Model.UserModel;
 import com.colman.trippy.R;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.util.ArrayList;
@@ -34,9 +40,15 @@ public class CreateTripFragment extends Fragment {
     ImageView saveTripBtn;
     Button addLocationButton;
     SwitchMaterial privateSwitch;
+    Spinner participantsSpinner;
+    ChipGroup chipGroup;
+    ArrayAdapter<String> participantsAdapter;
     Calendar calendar = Calendar.getInstance();
+    String[] allEmails;
 
+    ArrayList<String> participantsEmails;
     long fromDate;
+    boolean isSpinnerFirstCall;
     long untilDate;
 
     interface OnDateChangeListener {
@@ -52,7 +64,11 @@ public class CreateTripFragment extends Fragment {
         untilDatePicker = view.findViewById(R.id.trip_until_date);
         privateSwitch = view.findViewById(R.id.private_switch);
         saveTripBtn = view.findViewById(R.id.save_button);
+        participantsSpinner = view.findViewById(R.id.participants_spinner);
+        chipGroup = view.findViewById(R.id.participants_list);
+        isSpinnerFirstCall = true;
 
+        participantsEmails = new ArrayList<>();
         LocationsListAdapter adapter = new LocationsListAdapter();
         fromDatePicker.setOnClickListener(view1 -> showDatePickerDialog(fromDatePicker, null, (long date) -> fromDate = date));
         untilDatePicker.setOnClickListener(view1 -> {
@@ -64,6 +80,43 @@ public class CreateTripFragment extends Fragment {
                     adapter.setMaxDate(untilDate);
                     adapter.setMinDate(fromDate);
                 });
+            }
+        });
+
+        UserModel.instance.getAllUserEmails(new AppConsts.Listener<String[]>() {
+            @Override
+            public void onComplete(String[] result) {
+                allEmails = result;
+                participantsAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, result);
+                participantsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                participantsSpinner.setAdapter(participantsAdapter);
+            }
+
+            @Override
+            public void onFailure(String message) {
+
+            }
+        });
+
+        participantsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (!isSpinnerFirstCall) {
+                    String selectedEmail = allEmails[i];
+                    if (!participantsEmails.contains(selectedEmail)) {
+                        participantsEmails.add(selectedEmail);
+                        chipGroup.addView(createEmailChip(selectedEmail));
+                    } else {
+                        Toast.makeText(getContext(), "You already chose this e-mail", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    isSpinnerFirstCall = false;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
 
@@ -95,6 +148,15 @@ public class CreateTripFragment extends Fragment {
 
         handleRecyclerView(view, adapter);
         return view;
+    }
+
+    private Chip createEmailChip(String selectedEmail) {
+        Chip chip = new Chip(getContext());
+        chip.setText(selectedEmail);
+        chip.setChipBackgroundColorResource(R.color.primary_color);
+        chip.setCloseIconVisible(true);
+        chip.setTextColor(getResources().getColor(R.color.white));
+        return chip;
     }
 
     @SuppressLint("ClickableViewAccessibility")

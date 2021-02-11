@@ -2,6 +2,7 @@ package com.colman.trippy.Model;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
@@ -28,6 +29,7 @@ public class Trip {
     private ArrayList<Location> locations;
     private Long lastUpdated;
 
+    @Ignore
     public Trip(ArrayList<String> participantsEmails, String name, long fromDate, long untilDate, boolean isPrivate, ArrayList<Location> locations) {
         this.participantsEmails = participantsEmails;
         this.name = name;

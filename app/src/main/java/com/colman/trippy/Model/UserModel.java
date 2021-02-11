@@ -42,4 +42,10 @@ public class UserModel {
     public void isLoggedIn(IsLoggedInListener listener) {
         modelFirebase.isLoggedIn(listener);
     }
+
+
+    public void getAllUserEmails(AppConsts.Listener<String[]> listener) {
+        modelFirebase.getAllUserEmails(listener);
+    }
+
 }
