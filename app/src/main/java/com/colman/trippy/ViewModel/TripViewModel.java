@@ -14,7 +14,6 @@ public class TripViewModel extends ViewModel {
     private LiveData<List<Trip>> tripList;
 
     public TripViewModel() {
-        Log.d("TRIPLOG", "Created trip view model");
         tripList = TripModel.instance.getAllTrips();
     }
 

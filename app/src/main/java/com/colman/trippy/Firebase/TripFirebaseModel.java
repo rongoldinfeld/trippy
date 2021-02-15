@@ -23,9 +23,8 @@ public class TripFirebaseModel {
     FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     FirebaseFirestore fireStore = FirebaseFirestore.getInstance();
 
-    public void getAllTrips(Long lastUpdated, final AppConsts.Listener<ArrayList<Trip>> listener) {
+    public void getAllTrips(Long dataVersion, final AppConsts.Listener<ArrayList<Trip>> listener) {
         String userId = firebaseAuth.getCurrentUser().getUid();
-        // Timestamp ts = new Timestamp(lastUpdated, 0);
         fireStore.collection("users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
@@ -36,7 +35,7 @@ public class TripFirebaseModel {
                     DocumentSnapshot result = task.getResult();
                     User user = result.toObject(User.class);
                     data = user.getTrips();
-                    data.stream().filter(trip -> trip.getLastUpdated() > lastUpdated);
+                    data.stream().filter(trip -> trip.getDataVersion() > dataVersion);
                 }
 
                 listener.onComplete(data);

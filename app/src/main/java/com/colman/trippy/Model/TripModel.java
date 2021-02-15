@@ -37,19 +37,19 @@ public class TripModel {
 
     public void refreshTrips(AppConsts.OnCompleteListener listener) {
         final SharedPreferences sp = Trippy.context.getSharedPreferences("TAG", Context.MODE_PRIVATE);
-        long lastUpdated = sp.getLong("lastUpdated", 0);
+        long dataVersion = sp.getLong("dataVersion", 0);
 
-        tripFirebaseModel.getAllTrips(lastUpdated, new AppConsts.Listener<ArrayList<Trip>>() {
+        tripFirebaseModel.getAllTrips(dataVersion, new AppConsts.Listener<ArrayList<Trip>>() {
             @Override
             public void onComplete(ArrayList<Trip> result) {
-                long lastU = 0;
+                long lastDataVersion = 0;
                 for (Trip t : result) {
                     tripSqlModel.addTrip(t, null);
-                    if (t.getLastUpdated() > lastU) {
-                        lastU = t.getLastUpdated();
+                    if (t.getDataVersion() > lastDataVersion) {
+                        lastDataVersion = t.getDataVersion();
                     }
                 }
-                sp.edit().putLong("lastUpdated", lastU).apply();
+                sp.edit().putLong("dataVersion", lastDataVersion).apply();
 
                 if (listener != null) {
                     listener.onComplete();
