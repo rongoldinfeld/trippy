@@ -3,8 +3,11 @@ package com.colman.trippy.View.CreateTrip;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -13,9 +16,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.colman.trippy.AppConsts;
 import com.colman.trippy.Model.Trip;
 import com.colman.trippy.Model.TripModel;
+import com.colman.trippy.Model.User;
 import com.colman.trippy.Model.UserModel;
 import com.colman.trippy.R;
 import com.google.android.material.chip.Chip;
@@ -31,9 +37,10 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 
-public class CreateTripFragment extends Fragment {
+public class CreateTripFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener, AppConsts.Listener<String[]> {
     EditText mTripName;
     EditText fromDatePicker;
     EditText untilDatePicker;
@@ -42,17 +49,22 @@ public class CreateTripFragment extends Fragment {
     SwitchMaterial privateSwitch;
     Spinner participantsSpinner;
     ChipGroup chipGroup;
+    ProgressBar participantsPb;
     ArrayAdapter<String> participantsAdapter;
     Calendar calendar = Calendar.getInstance();
     String[] allEmails;
+    LocationsListAdapter adapter;
 
     ArrayList<String> participantsEmails;
     long fromDate;
     boolean isSpinnerFirstCall;
     long untilDate;
 
+
     interface OnDateChangeListener {
+
         void onChange(long date);
+
     }
 
     @Override
@@ -66,12 +78,13 @@ public class CreateTripFragment extends Fragment {
         saveTripBtn = view.findViewById(R.id.save_button);
         participantsSpinner = view.findViewById(R.id.participants_spinner);
         chipGroup = view.findViewById(R.id.participants_list);
+        participantsPb = view.findViewById(R.id.participants_pb);
         isSpinnerFirstCall = true;
 
         participantsEmails = new ArrayList<>();
-        LocationsListAdapter adapter = new LocationsListAdapter();
-        fromDatePicker.setOnClickListener(view1 -> showDatePickerDialog(fromDatePicker, null, (long date) -> fromDate = date));
-        untilDatePicker.setOnClickListener(view1 -> {
+        adapter = new LocationsListAdapter();
+        fromDatePicker.setOnClickListener(datePickerView -> showDatePickerDialog(fromDatePicker, null, (long date) -> fromDate = date));
+        untilDatePicker.setOnClickListener(datePickerView -> {
             if (fromDate == 0L) {
                 Toast.makeText(getContext(), "You must first provide from date", Toast.LENGTH_SHORT).show();
             } else {
@@ -83,79 +96,26 @@ public class CreateTripFragment extends Fragment {
             }
         });
 
-        UserModel.instance.getAllUserEmails(new AppConsts.Listener<String[]>() {
-            @Override
-            public void onComplete(String[] result) {
-                allEmails = result;
-                participantsAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, result);
-                participantsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                participantsSpinner.setAdapter(participantsAdapter);
-            }
-
-            @Override
-            public void onFailure(String message) {
-
-            }
-        });
-
-        participantsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (!isSpinnerFirstCall) {
-                    String selectedEmail = allEmails[i];
-                    if (!participantsEmails.contains(selectedEmail)) {
-                        participantsEmails.add(selectedEmail);
-                        chipGroup.addView(createEmailChip(selectedEmail));
-                    } else {
-                        Toast.makeText(getContext(), "You already chose this e-mail", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    isSpinnerFirstCall = false;
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        saveTripBtn.setOnClickListener(view12 -> {
-
-            if (mTripName.getText().toString().trim().length() == 0) {
-                mTripName.setError("You must enter trip name!");
-                return;
-            }
-
-            if (fromDate == 0L) {
-                fromDatePicker.setError("Please your trip from date!");
-                return;
-            }
-
-            if (untilDate == 0L) {
-                untilDatePicker.setError("Please your trip until date!");
-                return;
-            }
-
-            TripModel.instance.addTrip(new Trip(
-                    new ArrayList<>(0),
-                    mTripName.getText().toString().trim(),
-                    fromDate,
-                    untilDate,
-                    privateSwitch.isChecked(),
-                    adapter.getLocations()), () -> Navigation.findNavController(saveTripBtn).popBackStack());
-        });
-
+        participantsPb.setVisibility(View.VISIBLE);
+        UserModel.instance.getAllUserEmails(this);
+        participantsSpinner.setOnItemSelectedListener(this);
+        saveTripBtn.setOnClickListener(this);
         handleRecyclerView(view, adapter);
         return view;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private Chip createEmailChip(String selectedEmail) {
         Chip chip = new Chip(getContext());
         chip.setText(selectedEmail);
         chip.setChipBackgroundColorResource(R.color.primary_color);
         chip.setCloseIconVisible(true);
         chip.setTextColor(getResources().getColor(R.color.white));
+        chip.setOnTouchListener((view, motionEvent) -> {
+            participantsEmails.remove(selectedEmail);
+            chipGroup.removeView(chip);
+            return false;
+        });
         return chip;
     }
 
@@ -193,5 +153,88 @@ public class CreateTripFragment extends Fragment {
             datePickerDialog.getDatePicker().setMinDate(minDate);
         }
         datePickerDialog.show();
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        if (!isSpinnerFirstCall) {
+            if (i > 0) {
+                String selectedEmail = allEmails[i-1];
+                if (!participantsEmails.contains(selectedEmail)) {
+                    participantsEmails.add(selectedEmail);
+                    chipGroup.addView(createEmailChip(selectedEmail));
+                } else {
+                    Toast.makeText(getContext(), "You already chose this e-mail", Toast.LENGTH_SHORT).show();
+                }
+            }
+        } else {
+            isSpinnerFirstCall = false;
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (mTripName.getText().toString().trim().length() == 0) {
+            mTripName.setError("You must enter trip name!");
+            return;
+        }
+
+        if (fromDate == 0L) {
+            fromDatePicker.setError("Please your trip from date!");
+            return;
+        }
+
+        if (untilDate == 0L) {
+            untilDatePicker.setError("Please your trip until date!");
+            return;
+        }
+
+        TripModel.instance.addTrip(new Trip(
+                participantsEmails,
+                mTripName.getText().toString().trim(),
+                fromDate,
+                untilDate,
+                privateSwitch.isChecked(),
+                adapter.getLocations()), () -> Navigation.findNavController(saveTripBtn).popBackStack());
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void onComplete(String[] result) {
+        UserModel.instance.getCurrentUser(new AppConsts.Listener<User>() {
+            @Override
+            public void onComplete(User currentUser) {
+                allEmails = Arrays.stream(result).filter(email -> !TextUtils.equals(email, currentUser.getEmail())).toArray(String[]::new);
+                String[] options = add2BeginningOfArray(allEmails, "Select participants!");
+                participantsAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_item, options);
+                participantsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                participantsSpinner.setAdapter(participantsAdapter);
+                participantsPb.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onFailure(String message) {
+                participantsPb.setVisibility(View.INVISIBLE);
+                Toast.makeText(getContext(), "Failed to load user mails!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public void onFailure(String message) {
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
+
+    public <T> T[] add2BeginningOfArray(T[] elements, T element) {
+        T[] newArray = Arrays.copyOf(elements, elements.length + 1);
+        newArray[0] = element;
+        System.arraycopy(elements, 0, newArray, 1, elements.length);
+
+        return newArray;
     }
 }

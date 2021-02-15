@@ -6,8 +6,6 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
-import com.google.firebase.Timestamp;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,19 +21,19 @@ public class Trip {
 
     private long fromDate;
     private long untilDate;
-    private boolean isPrivate;
+    private boolean isTripPrivate;
 
     @TypeConverters(LocationsListConverter.class)
     private ArrayList<Location> locations;
-    private Long lastUpdated;
+    private Long dataVersion;
 
     @Ignore
-    public Trip(ArrayList<String> participantsEmails, String name, long fromDate, long untilDate, boolean isPrivate, ArrayList<Location> locations) {
+    public Trip(ArrayList<String> participantsEmails, String name, long fromDate, long untilDate, boolean isTripPrivate, ArrayList<Location> locations) {
         this.participantsEmails = participantsEmails;
         this.name = name;
         this.fromDate = fromDate;
         this.untilDate = untilDate;
-        this.isPrivate = isPrivate;
+        this.isTripPrivate = isTripPrivate;
         this.locations = locations;
     }
 
@@ -49,9 +47,14 @@ public class Trip {
         result.put("name", this.name);
         result.put("fromDate", this.fromDate);
         result.put("untilDate", this.untilDate);
-        result.put("isPrivate", this.isPrivate);
+        result.put("tripPrivate", this.isTripPrivate);
         result.put("locations", this.locations);
-        result.put("lastUpdated", System.currentTimeMillis() / 1000);
+        if (this.dataVersion != null) {
+            result.put("dataVersion", this.dataVersion);
+        } else {
+            result.put("dataVersion", 0);
+        }
+
         return result;
     }
 
@@ -60,10 +63,10 @@ public class Trip {
         this.name = (String) map.get("name");
         this.fromDate = (long) map.get("fromDate");
         this.untilDate = (long) map.get("untilDate");
-        this.isPrivate = (Boolean) map.get("isPrivate");
+        this.isTripPrivate = (Boolean) map.get("tripPrivate");
         this.locations = (ArrayList<Location>) map.get("locations");
-        Timestamp ts = (Timestamp) map.get("lastUpdated");
-        this.lastUpdated = ts.getSeconds();
+        this.dataVersion = (long) map.get("dataVersion");
+        ;
     }
 
     public String getName() {
@@ -90,12 +93,12 @@ public class Trip {
         this.untilDate = untilDate;
     }
 
-    public boolean isPrivate() {
-        return isPrivate;
+    public boolean isTripPrivate() {
+        return isTripPrivate;
     }
 
-    public void setPrivate(boolean aPrivate) {
-        isPrivate = aPrivate;
+    public void setTripPrivate(boolean tripPrivate) {
+        isTripPrivate = tripPrivate;
     }
 
     public ArrayList<Location> getLocations() {
@@ -114,12 +117,12 @@ public class Trip {
         this.participantsEmails = participantsEmails;
     }
 
-    public Long getLastUpdated() {
-        return lastUpdated;
+    public Long getDataVersion() {
+        return dataVersion;
     }
 
-    public void setLastUpdated(Long lastUpdated) {
-        this.lastUpdated = lastUpdated;
+    public void setDataVersion(Long dataVersion) {
+        this.dataVersion = dataVersion;
     }
 }
 

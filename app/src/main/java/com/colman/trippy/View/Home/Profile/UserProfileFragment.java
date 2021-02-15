@@ -20,7 +20,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.colman.trippy.AppConsts;
 import com.colman.trippy.Model.Trip;
 import com.colman.trippy.Model.TripModel;
 import com.colman.trippy.Model.UserModel;
@@ -56,7 +55,7 @@ public class UserProfileFragment extends Fragment {
 
         sref.setOnRefreshListener(() -> {
             sref.setRefreshing(true);
-            reloadData(adapter);
+            reloadData();
         });
 
         rv.setAdapter(adapter);
@@ -92,7 +91,7 @@ public class UserProfileFragment extends Fragment {
         return view;
     }
 
-    private void reloadData(UserTripListAdapter adapter) {
+    private void reloadData() {
         pb.setVisibility(View.VISIBLE);
         TripModel.instance.refreshTrips(() -> {
             pb.setVisibility(View.INVISIBLE);
@@ -116,11 +115,19 @@ public class UserProfileFragment extends Fragment {
             Trip t = viewModel.getTripList().getValue().get(position);
             String fromDate = sdf.format(t.getFromDate());
             String untilDate = sdf.format(t.getUntilDate());
-            String participants = t.getParticipantsEmails().stream().collect(Collectors.joining(","));
+            String participants;
+            if (t.getParticipantsEmails().size() > 1) {
+                participants = t.getParticipantsEmails().get(0).substring(0, 3).concat("... +" + (t.getParticipantsEmails().size() - 1));
+            } else {
+                participants = t.getParticipantsEmails().stream().collect(Collectors.joining(","));
+            }
 
             holder.tripName.setText(t.getName());
             holder.dates.setText(fromDate + " - " + untilDate);
             holder.participants.setText(participants);
+            if (t.isTripPrivate()) {
+                holder.isPrivateLock.setVisibility(View.VISIBLE);
+            }
         }
 
         @Override
@@ -135,12 +142,14 @@ public class UserProfileFragment extends Fragment {
             TextView tripName;
             TextView dates;
             TextView participants;
+            ImageView isPrivateLock;
 
             public TripItemViewHolder(View itemView) {
                 super(itemView);
                 tripName = itemView.findViewById(R.id.trip_name);
                 dates = itemView.findViewById(R.id.dates_text);
                 participants = itemView.findViewById(R.id.participants_text);
+                isPrivateLock = itemView.findViewById(R.id.is_private_lock);
             }
         }
     }

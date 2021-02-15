@@ -100,7 +100,6 @@ public class UserFirebaseModel {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
-                    Log.d("TRIPLOG", "DocumentSnapshot data: " + document.getData());
                     User user = document.toObject(User.class);
                     listener.onComplete(user);
                 } else {
@@ -120,6 +119,7 @@ public class UserFirebaseModel {
                 if (task.isSuccessful()) {
                     List<User> users = task.getResult().toObjects(User.class);
                     String[] emails = users.stream().map(User::getEmail).toArray(String[]::new);
+                    Log.d("TRIPLOG", "Finished getting all users emails. length: " + emails.length);
                     listener.onComplete(emails);
                 } else {
                     String message = task.getException().getMessage();
