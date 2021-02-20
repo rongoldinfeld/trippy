@@ -16,8 +16,14 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class TripFirebaseModel {
     FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
@@ -102,4 +108,23 @@ public class TripFirebaseModel {
 //            }
 //        });
 //    }
+
+    public void getSearchedTrips(Long dataVersion, final AppConsts.Listener<ArrayList<Trip>> listener, String query) {
+        fireStore.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    ArrayList<Trip> trips = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        trips.addAll(document.toObject(User.class).getTrips().stream().filter(trip -> trip.getName().toLowerCase().contains(query.toLowerCase())).collect(Collectors.toList()));
+                        Log.d("TRIPLOG", "(Firebase)" + document.getId() + " => " + document.getData());
+                    }
+                    listener.onComplete(trips);
+                } else {
+                    Log.d("TRIPLOG", "(Firebase) Error getting documents: ", task.getException());
+                }
+            }
+        });
+    }
 }

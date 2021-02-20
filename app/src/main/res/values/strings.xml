@@ -9,4 +9,5 @@
     <string name="add_location">Add location</string>
     <string name="save">Save</string>
     <string name="toggle_private">Private</string>
+    <string name="search_trip">Search trips</string>
 </resources>
