@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.Layout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,32 +11,30 @@ import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import com.colman.trippy.AppConsts;
+import com.colman.trippy.Model.SearchModel;
+import com.colman.trippy.Model.Trip;
+import com.colman.trippy.R;
+import com.colman.trippy.Trippy;
+import com.colman.trippy.ViewModel.SearchViewModel;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.colman.trippy.AppConsts;
-import com.colman.trippy.Firebase.TripFirebaseModel;
-import com.colman.trippy.Model.Trip;
-import com.colman.trippy.Model.TripModel;
-import com.colman.trippy.R;
-import com.colman.trippy.Trippy;
-import com.colman.trippy.View.Home.Profile.UserProfileFragment;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.colman.trippy.AppConsts.sdf;
 
 public class TripSearchFragment extends Fragment {
     SearchView searchView;
     RecyclerView recyclerView;
-    List<Trip> trips;
-    TripFirebaseModel tripFirebaseModel = new TripFirebaseModel();
+    SearchViewModel searchViewModel;
     SearchTripListAdapter adapter;
 
     @Override
@@ -55,40 +51,24 @@ public class TripSearchFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new SearchTripListAdapter();
         recyclerView.setAdapter(adapter);
+        searchViewModel = new ViewModelProvider(this).get(SearchViewModel.class);
+        searchViewModel.getTripList().observe(getViewLifecycleOwner(), trips -> adapter.notifyDataSetChanged());
 
-        final SharedPreferences sp = Trippy.context.getSharedPreferences("TAG", Context.MODE_PRIVATE);
-        long dataVersion = sp.getLong("dataVersion", 0);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String s) {
-                return getSearchedTripsByQuery(s, dataVersion, sp);
+            public boolean onQueryTextSubmit(String searchValue) {
+                SearchModel.instance.searchTrips(searchValue);
+                return true;
             }
 
             @Override
-            public boolean onQueryTextChange(String s) {
-                return getSearchedTripsByQuery(s, dataVersion, sp);
+            public boolean onQueryTextChange(String searchValue) {
+                SearchModel.instance.searchTrips(searchValue);
+                return true;
             }
         });
 
         return searchViewFragment;
-    }
-
-    private boolean getSearchedTripsByQuery(String s, long dataVersion, SharedPreferences sp) {
-        tripFirebaseModel.getSearchedTrips(dataVersion, new AppConsts.Listener<ArrayList<Trip>>() {
-            @Override
-            public void onComplete(ArrayList<Trip> result) {
-                long lastDataVersion = 0;
-                trips = result;
-                adapter.notifyDataSetChanged();
-                sp.edit().putLong("dataVersion", lastDataVersion).apply();
-            }
-
-            @Override
-            public void onFailure(String message) {
-                Log.d("TRIPLOG", "Failed to retrieve all trips. Error" + message);
-            }
-        }, s);
-        return true;
     }
 
     class SearchTripListAdapter extends RecyclerView.Adapter<TripItemViewHolder> {
@@ -102,7 +82,7 @@ public class TripSearchFragment extends Fragment {
         @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void onBindViewHolder(@NonNull TripItemViewHolder holder, int position) {
-            Trip trip = trips.get(position);
+            Trip trip = searchViewModel.getTripList().getValue().get(position);
 
             String fromDate = sdf.format(trip.getFromDate());
             String untilDate = sdf.format(trip.getUntilDate());
@@ -123,10 +103,10 @@ public class TripSearchFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            if (trips == null) {
+            if (searchViewModel.getTripList() == null) {
                 return 0;
             }
-            return trips.size();
+            return searchViewModel.getTripList().getValue().size();
         }
     }
 
