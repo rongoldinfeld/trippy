@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -36,6 +37,7 @@ public class TripSearchFragment extends Fragment {
     RecyclerView recyclerView;
     SearchViewModel searchViewModel;
     SearchTripListAdapter adapter;
+    ProgressBar progressBar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,29 +48,40 @@ public class TripSearchFragment extends Fragment {
         searchView = searchViewFragment.findViewById(R.id.search_input);
         searchView.setIconifiedByDefault(false);
 
+        progressBar = searchViewFragment.findViewById(R.id.search_list_progress_bar);
+        progressBar.setVisibility(View.INVISIBLE);
+
         recyclerView = searchViewFragment.findViewById(R.id.search_list);
         recyclerView.hasFixedSize();
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new SearchTripListAdapter();
         recyclerView.setAdapter(adapter);
         searchViewModel = new ViewModelProvider(this).get(SearchViewModel.class);
-        searchViewModel.getTripList().observe(getViewLifecycleOwner(), trips -> adapter.notifyDataSetChanged());
+        searchViewModel.getTripList().observe(getViewLifecycleOwner(), trips -> {
+            adapter.notifyDataSetChanged();
+            progressBar.setVisibility(View.INVISIBLE);
+        });
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String searchValue) {
-                SearchModel.instance.searchTrips(searchValue);
+                refreshSearchData(searchValue);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String searchValue) {
-                SearchModel.instance.searchTrips(searchValue);
+                refreshSearchData(searchValue);
                 return true;
             }
         });
 
         return searchViewFragment;
+    }
+
+    private  void refreshSearchData(String searchValue) {
+        progressBar.setVisibility(View.VISIBLE);
+        SearchModel.instance.searchTrips(searchValue);
     }
 
     class SearchTripListAdapter extends RecyclerView.Adapter<TripItemViewHolder> {
