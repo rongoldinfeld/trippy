@@ -1,25 +1,35 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:baselineAligned="false"
     android:orientation="horizontal"
-    android:paddingBottom="4dp">
+    android:paddingBottom="4dp"
+    android:id="@+id/linearLayout">
 
     <EditText
         android:id="@+id/location_date"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@null"
         android:focusable="false"
         android:hint="date"
-        android:paddingEnd="5dp" />
+        android:paddingEnd="5dp"
+        tools:layout_conversion_absoluteHeight="80dp"
+        tools:layout_conversion_absoluteWidth="50dp"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp" />
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="160dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginEnd="114dp"
-        android:background="@drawable/layout_border">
+        android:background="@drawable/layout_border"
+        android:orientation="horizontal"
+        tools:layout_conversion_absoluteHeight="80dp"
+        tools:layout_conversion_absoluteWidth="286dp"
+        tools:layout_editor_absoluteX="50dp"
+        tools:layout_editor_absoluteY="0dp">
 
         <EditText
             android:id="@+id/location_text"
@@ -29,6 +39,28 @@
             android:hint="Add your location name here!"
             android:padding="12dp" />
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginStart="15dp"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/edit_image_button"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_weight="1"
+            android:text="@string/edit_image" />
+
+        <ImageView
+            android:id="@+id/image_view"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_weight="1"
+            android:visibility="invisible"
+            tools:srcCompat="@tools:sample/avatars" />
     </LinearLayout>
 
 
