@@ -122,7 +122,7 @@ public class TripFirebaseModel {
         });
     }
 
-    public void getSearchedTrips(Long dataVersion, final AppConsts.Listener<ArrayList<Trip>> listener, String query) {
+    public void getSearchedTrips(final AppConsts.Listener<ArrayList<Trip>> listener, String query) {
         fireStore.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
@@ -130,7 +130,10 @@ public class TripFirebaseModel {
                 if (task.isSuccessful()) {
                     ArrayList<Trip> trips = new ArrayList<>();
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        trips.addAll(document.toObject(User.class).getTrips().stream().filter(trip -> trip.getName().toLowerCase().contains(query.toLowerCase())).collect(Collectors.toList()));
+                        trips.addAll(document.toObject(User.class).getTrips().stream()
+                                .filter(trip -> !trip.isTripPrivate())
+                                .filter(trip -> trip.getName().toLowerCase().contains(query.toLowerCase()))
+                                .collect(Collectors.toList()));
                         Log.d("TRIPLOG", "(Firebase)" + document.getId() + " => " + document.getData());
                     }
                     listener.onComplete(trips);

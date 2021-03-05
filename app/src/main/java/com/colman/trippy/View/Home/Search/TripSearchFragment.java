@@ -76,6 +76,8 @@ public class TripSearchFragment extends Fragment {
             }
         });
 
+        refreshSearchData("");
+
         return searchViewFragment;
     }
 
