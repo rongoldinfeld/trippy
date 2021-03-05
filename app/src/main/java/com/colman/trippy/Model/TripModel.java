@@ -2,6 +2,7 @@ package com.colman.trippy.Model;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -80,5 +81,31 @@ public class TripModel {
                 listener.onComplete();
             }
         });
+    }
+
+    public void uploadImages(ArrayList<Location> locations, AppConsts.Listener<ArrayList<String>> listener) {
+        ArrayList<String> imageUrls = new ArrayList<>();
+        final int[] uploadCounter = {0};
+        for (Location location : locations) {
+            tripFirebaseModel.uploadImage(BitmapFactory.decodeFile(location.getImageUrl()), location.getLocationName() + " " + location.getDateVisited(), new AppConsts.Listener<String>() {
+                @Override
+                public void onComplete(String result) {
+                    Log.d("TRIPLOG", "Done uploading image for location: " + location.getLocationName());
+                    imageUrls.add(result);
+                    uploadCounter[0]++;
+
+                    if (uploadCounter[0] == locations.size()) {
+                        listener.onComplete(imageUrls);
+                    }
+                }
+
+                @Override
+                public void onFailure(String message) {
+                    Log.d("TRIPLOG", "Failed uploading image for location: " + location.getLocationName());
+                    listener.onFailure(message);
+                }
+            });
+        }
+
     }
 }

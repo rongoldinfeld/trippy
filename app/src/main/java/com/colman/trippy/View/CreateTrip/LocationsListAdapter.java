@@ -1,13 +1,21 @@
 package com.colman.trippy.View.CreateTrip;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.colman.trippy.Model.Location;
@@ -17,10 +25,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import android.graphics.Bitmap;
+import android.widget.ImageView;
+
+import static android.app.Activity.RESULT_OK;
 import static com.colman.trippy.AppConsts.getLongFromDate;
 import static com.colman.trippy.AppConsts.sdf;
 
 public class LocationsListAdapter extends RecyclerView.Adapter<LocationsListAdapter.ViewHolder> {
+    private final Fragment mFragment;
     Calendar calendar = Calendar.getInstance();
 
     /**
@@ -28,21 +41,30 @@ public class LocationsListAdapter extends RecyclerView.Adapter<LocationsListAdap
      * (custom ViewHolder).
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public EditText locationName, locationDate;
 
-        public ViewHolder(View view) {
+        private final Fragment mFragment;
+        public EditText locationName, locationDate;
+        public Button editImageButton;
+        public ImageView image;
+
+        public ViewHolder(View view, Fragment mFragment) {
             super(view);
+            this.mFragment = mFragment;
             locationName = view.findViewById(R.id.location_text);
             locationDate = view.findViewById(R.id.location_date);
+            editImageButton = view.findViewById(R.id.edit_image_button);
+            image = view.findViewById(R.id.image_view);
         }
     }
 
     private final ArrayList<Location> locationDataSet;
+
     private long minDate;
     private long maxDate;
 
-    public LocationsListAdapter() {
+    public LocationsListAdapter(Fragment fragment) {
         this.locationDataSet = new ArrayList<>();
+        this.mFragment = fragment;
     }
 
     @Override
@@ -50,7 +72,7 @@ public class LocationsListAdapter extends RecyclerView.Adapter<LocationsListAdap
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.card_item, viewGroup, false);
 
-        return new ViewHolder(view);
+        return new ViewHolder(view, mFragment);
     }
 
     @Override
@@ -75,6 +97,21 @@ public class LocationsListAdapter extends RecyclerView.Adapter<LocationsListAdap
             public void afterTextChanged(Editable editable) {
                 locationDataSet.get(position).setLocationName(editable.toString());
             }
+        });
+
+        viewHolder.editImageButton.setOnClickListener(view -> {
+            final CharSequence[] options = {"Choose from Gallery", "Cancel"};
+            AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+            builder.setTitle("Choose your profile picture");
+            builder.setItems(options, (dialog, item) -> {
+                if (options[item].equals("Choose from Gallery")) {
+                    Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    mFragment.startActivityForResult(pickPhoto, position);
+                } else if (options[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            });
+            builder.show();
         });
     }
 
@@ -102,7 +139,7 @@ public class LocationsListAdapter extends RecyclerView.Adapter<LocationsListAdap
     }
 
     public void addNewEmptyLocation() {
-        locationDataSet.add(new Location(minDate, ""));
+        locationDataSet.add(new Location(minDate, "", ""));
     }
 
     public void setMinDate(long date) {
@@ -115,5 +152,11 @@ public class LocationsListAdapter extends RecyclerView.Adapter<LocationsListAdap
 
     public ArrayList<Location> getLocations() {
         return this.locationDataSet;
+    }
+
+    public void setImage(ViewHolder viewHolder, int position, String picturePath) {
+        viewHolder.image.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+        viewHolder.image.setVisibility(View.VISIBLE);
+        this.locationDataSet.get(position).setImageUrl(picturePath);
     }
 }
