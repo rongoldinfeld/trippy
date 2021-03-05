@@ -1,5 +1,7 @@
 package com.colman.trippy.Firebase;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
@@ -10,6 +12,8 @@ import com.colman.trippy.AppConsts;
 import com.colman.trippy.Model.Trip;
 import com.colman.trippy.Model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -18,8 +22,15 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -83,31 +94,33 @@ public class TripFirebaseModel {
     //TODO: Implement update trip
 
     //TODO: Implement uploadImage
-//    public void uploadImage(Bitmap imageBmp, String name, final Model.UploadImageListener listener){
-//        FirebaseStorage storage = FirebaseStorage.getInstance();
-//        final StorageReference imagesRef = storage.getReference().child("images").child(name);
-//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//        imageBmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-//        byte[] data = baos.toByteArray();
-//        UploadTask uploadTask = imagesRef.putBytes(data);
-//        uploadTask.addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(Exception exception) {
-//                listener.onComplete(null);
-//            }
-//        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//            @Override
-//            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                imagesRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//                    @Override
-//                    public void onSuccess(Uri uri) {
-//                        Uri downloadUrl = uri;
-//                        listener.onComplete(downloadUrl.toString());
-//                    }
-//                });
-//            }
-//        });
-//    }
+
+    public void uploadImage(Bitmap imageBmp, String name, final AppConsts.Listener<String> listener) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        final StorageReference imagesRef = storage.getReference().child("images").child(name);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        imageBmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+        UploadTask uploadTask = imagesRef.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(Exception exception) {
+                Log.d("TRIPLOG", "Failed uploading image " + name + " reason: " + exception.getMessage());
+                listener.onFailure(exception.getMessage());
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                imagesRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Uri downloadUrl = uri;
+                        listener.onComplete(downloadUrl.toString());
+                    }
+                });
+            }
+        });
+    }
 
     public void getSearchedTrips(Long dataVersion, final AppConsts.Listener<ArrayList<Trip>> listener, String query) {
         fireStore.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

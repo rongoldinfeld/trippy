@@ -1,13 +1,19 @@
 package com.colman.trippy.View.CreateTrip;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -27,6 +33,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.colman.trippy.AppConsts;
+import com.colman.trippy.Model.Location;
 import com.colman.trippy.Model.Trip;
 import com.colman.trippy.Model.TripModel;
 import com.colman.trippy.Model.User;
@@ -36,9 +43,13 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
 
 public class CreateTripFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener, AppConsts.Listener<String[]> {
     EditText mTripName;
@@ -54,6 +65,7 @@ public class CreateTripFragment extends Fragment implements AdapterView.OnItemSe
     Calendar calendar = Calendar.getInstance();
     String[] allEmails;
     LocationsListAdapter adapter;
+    RecyclerView rv;
 
     ArrayList<String> participantsEmails;
     long fromDate;
@@ -62,9 +74,7 @@ public class CreateTripFragment extends Fragment implements AdapterView.OnItemSe
 
 
     interface OnDateChangeListener {
-
         void onChange(long date);
-
     }
 
     @Override
@@ -82,7 +92,7 @@ public class CreateTripFragment extends Fragment implements AdapterView.OnItemSe
         isSpinnerFirstCall = true;
 
         participantsEmails = new ArrayList<>();
-        adapter = new LocationsListAdapter();
+        adapter = new LocationsListAdapter(CreateTripFragment.this);
         fromDatePicker.setOnClickListener(datePickerView -> showDatePickerDialog(fromDatePicker, null, (long date) -> fromDate = date));
         untilDatePicker.setOnClickListener(datePickerView -> {
             if (fromDate == 0L) {
@@ -101,6 +111,7 @@ public class CreateTripFragment extends Fragment implements AdapterView.OnItemSe
         participantsSpinner.setOnItemSelectedListener(this);
         saveTripBtn.setOnClickListener(this);
         handleRecyclerView(view, adapter);
+
         return view;
     }
 
@@ -121,10 +132,10 @@ public class CreateTripFragment extends Fragment implements AdapterView.OnItemSe
 
     @SuppressLint("ClickableViewAccessibility")
     private LocationsListAdapter handleRecyclerView(View view, LocationsListAdapter adapter) {
-        RecyclerView rv = view.findViewById(R.id.locations_rv);
-        rv.setAdapter(adapter);
-        rv.setLayoutManager(new LinearLayoutManager(getContext()));
-        rv.setOnTouchListener((v, event) -> {
+        this.rv = view.findViewById(R.id.locations_rv);
+        this.rv.setAdapter(adapter);
+        this.rv.setLayoutManager(new LinearLayoutManager(getContext()));
+        this.rv.setOnTouchListener((v, event) -> {
             InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
             return false;
@@ -159,7 +170,7 @@ public class CreateTripFragment extends Fragment implements AdapterView.OnItemSe
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         if (!isSpinnerFirstCall) {
             if (i > 0) {
-                String selectedEmail = allEmails[i-1];
+                String selectedEmail = allEmails[i - 1];
                 if (!participantsEmails.contains(selectedEmail)) {
                     participantsEmails.add(selectedEmail);
                     chipGroup.addView(createEmailChip(selectedEmail));
@@ -189,13 +200,29 @@ public class CreateTripFragment extends Fragment implements AdapterView.OnItemSe
             return;
         }
 
-        TripModel.instance.addTrip(new Trip(
-                participantsEmails,
-                mTripName.getText().toString().trim(),
-                fromDate,
-                untilDate,
-                privateSwitch.isChecked(),
-                adapter.getLocations()), () -> Navigation.findNavController(saveTripBtn).popBackStack());
+        TripModel.instance.uploadImages(adapter.getLocations(), new AppConsts.Listener<ArrayList<String>>() {
+            @Override
+            public void onComplete(ArrayList<String> result) {
+                ArrayList<Location> updatedLocations = new ArrayList<>();
+                for (int i = 0; i < adapter.getLocations().size(); i++) {
+                    Location location = adapter.getLocations().get(i);
+                    updatedLocations.add(new Location(location.getDateVisited(), location.getLocationName(), result.get(i)));
+                }
+
+                TripModel.instance.addTrip(new Trip(
+                        participantsEmails,
+                        mTripName.getText().toString().trim(),
+                        fromDate,
+                        untilDate,
+                        privateSwitch.isChecked(),
+                        updatedLocations), () -> Navigation.findNavController(saveTripBtn).popBackStack());
+            }
+
+            @Override
+            public void onFailure(String message) {
+                Toast.makeText(getContext(), "Failed to upload your images..." + message, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -236,5 +263,29 @@ public class CreateTripFragment extends Fragment implements AdapterView.OnItemSe
         System.arraycopy(elements, 0, newArray, 1, elements.length);
 
         return newArray;
+    }
+
+    @Override
+    public void onActivityResult(int position, int resultCode, Intent data) {
+        if (resultCode != RESULT_CANCELED) {
+            if (resultCode == RESULT_OK && data != null) {
+                Uri selectedImage = data.getData();
+                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                if (selectedImage != null) {
+                    Cursor cursor = getActivity().getContentResolver().query(selectedImage,
+                            filePathColumn, null, null, null);
+                    if (cursor != null) {
+                        cursor.moveToFirst();
+                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                        String picturePath = cursor.getString(columnIndex);
+                        LocationsListAdapter.ViewHolder viewHolder = (LocationsListAdapter.ViewHolder) this.rv.findViewHolderForAdapterPosition(position);
+                        if (viewHolder != null) {
+                            adapter.setImage(viewHolder, position, picturePath);
+                        }
+                        cursor.close();
+                    }
+                }
+            }
+        }
     }
 }
