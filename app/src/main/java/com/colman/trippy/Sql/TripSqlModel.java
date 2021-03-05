@@ -35,4 +35,26 @@ public class TripSqlModel {
         AddTripAsyncTask task = new AddTripAsyncTask();
         task.execute();
     }
+
+    public void deleteTrip(final Trip trip, final AppConsts.OnCompleteListener listener) {
+        class RemoveTripAsyncTask extends AsyncTask {
+
+            @Override
+            protected Object doInBackground(Object[] objects) {
+                AppLocalDb.db.tripDao().delete(trip);
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Object o) {
+                super.onPostExecute(o);
+                if (listener != null) {
+                    listener.onComplete();
+                }
+            }
+        }
+
+        RemoveTripAsyncTask task = new RemoveTripAsyncTask();
+        task.execute();
+    }
 }

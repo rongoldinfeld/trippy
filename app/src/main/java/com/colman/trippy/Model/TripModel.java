@@ -83,6 +83,26 @@ public class TripModel {
         });
     }
 
+    public void removeTrip(Trip trip, AppConsts.OnCompleteListener listener) {
+        tripFirebaseModel.removeTrip(trip, new AppConsts.Listener<Boolean>() {
+            @Override
+            public void onComplete(Boolean result) {
+                Log.d("TRIPLOG", "Successfully deleted trip with result: " + result.toString());
+                tripSqlModel.deleteTrip(trip, () ->
+                refreshTrips(() -> {
+                    Log.d("TRIPLOG", "Refreshing trips after deletion, succeeded");
+                    listener.onComplete();
+                }));
+            }
+
+            @Override
+            public void onFailure(String message) {
+                Log.d("TRIPLOG", "Failed to delete trip. Error: " + message);
+                listener.onComplete();
+            }
+        });
+    }
+
     public void uploadImages(ArrayList<Location> locations, AppConsts.Listener<ArrayList<String>> listener) {
         ArrayList<String> imageUrls = new ArrayList<>();
         final int[] uploadCounter = {0};
