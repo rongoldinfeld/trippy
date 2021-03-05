@@ -8,16 +8,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.colman.trippy.AppConsts;
+import com.colman.trippy.Model.Location;
 import com.colman.trippy.Model.SearchModel;
 import com.colman.trippy.Model.Trip;
 import com.colman.trippy.R;
 import com.colman.trippy.Trippy;
 import com.colman.trippy.ViewModel.SearchViewModel;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -114,6 +117,14 @@ public class TripSearchFragment extends Fragment {
             if (trip.isTripPrivate()) {
                 holder.isPrivateLock.setVisibility(View.VISIBLE);
             }
+
+            holder.linearLayout.removeAllViews();
+            for (Location loc : trip.getLocations()) {
+                ImageView imageView = new ImageView(getContext());
+                imageView.setPadding(10, 0, 10, 0);
+                Picasso.get().load(loc.getImageUrl()).resize(100, 100).into(imageView);
+                holder.linearLayout.addView(imageView);
+            }
         }
 
         @Override
@@ -130,6 +141,7 @@ public class TripSearchFragment extends Fragment {
         TextView dates;
         TextView participants;
         ImageView isPrivateLock;
+        LinearLayout linearLayout;
 
         public TripItemViewHolder(View itemView) {
             super(itemView);
@@ -137,6 +149,7 @@ public class TripSearchFragment extends Fragment {
             dates = itemView.findViewById(R.id.dates_text);
             participants = itemView.findViewById(R.id.participants_text);
             isPrivateLock = itemView.findViewById(R.id.is_private_lock);
+            linearLayout = itemView.findViewById(R.id.image_linear_layout);
         }
     }
 }
