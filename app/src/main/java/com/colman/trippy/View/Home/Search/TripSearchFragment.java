@@ -30,6 +30,7 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -41,12 +42,13 @@ public class TripSearchFragment extends Fragment {
     SearchViewModel searchViewModel;
     SearchTripListAdapter adapter;
     ProgressBar progressBar;
+    View searchViewFragment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View searchViewFragment = inflater.inflate(R.layout.fragment_trip_search, container, false);
+        searchViewFragment = inflater.inflate(R.layout.fragment_trip_search, container, false);
 
         searchView = searchViewFragment.findViewById(R.id.search_input);
         searchView.setIconifiedByDefault(false);
@@ -125,6 +127,15 @@ public class TripSearchFragment extends Fragment {
                 Picasso.get().load(loc.getImageUrl()).resize(100, 100).into(imageView);
                 holder.linearLayout.addView(imageView);
             }
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    TripSearchFragmentDirections.ActionTripSearchToTripDetails action = TripSearchFragmentDirections.actionTripSearchToTripDetails(trip);
+                    Navigation.findNavController(searchViewFragment).navigate(action);
+                }
+            });
+            holder.itemView.setClickable(true);
         }
 
         @Override

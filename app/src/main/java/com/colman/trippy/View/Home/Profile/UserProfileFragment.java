@@ -18,6 +18,7 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -26,6 +27,7 @@ import com.colman.trippy.Model.Trip;
 import com.colman.trippy.Model.TripModel;
 import com.colman.trippy.Model.UserModel;
 import com.colman.trippy.R;
+import com.colman.trippy.View.Home.Search.TripSearchFragmentDirections;
 import com.colman.trippy.View.Login;
 import com.colman.trippy.ViewModel.TripViewModel;
 import com.squareup.picasso.Picasso;
@@ -38,7 +40,7 @@ import static com.colman.trippy.AppConsts.sdf;
 public class UserProfileFragment extends Fragment {
     TripViewModel viewModel;
     ImageView logoutButton;
-
+    View userProfileView;
     ProgressBar pb;
     SwipeRefreshLayout sref;
 
@@ -46,15 +48,15 @@ public class UserProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_user_profile, container, false);
-        logoutButton = view.findViewById(R.id.logout_image);
+        userProfileView = inflater.inflate(R.layout.fragment_user_profile, container, false);
+        logoutButton = userProfileView.findViewById(R.id.logout_image);
         viewModel = new ViewModelProvider(this).get(TripViewModel.class);
-        RecyclerView rv = view.findViewById(R.id.user_trips_list);
+        RecyclerView rv = userProfileView.findViewById(R.id.user_trips_list);
         UserTripListAdapter adapter = new UserTripListAdapter();
 
-        pb = view.findViewById(R.id.trip_list_progress_bar);
+        pb = userProfileView.findViewById(R.id.trip_list_progress_bar);
         pb.setVisibility(View.INVISIBLE);
-        sref = view.findViewById(R.id.swiperefresh);
+        sref = userProfileView.findViewById(R.id.swiperefresh);
 
         sref.setOnRefreshListener(() -> {
             sref.setRefreshing(true);
@@ -70,11 +72,12 @@ public class UserProfileFragment extends Fragment {
 
             @Override
             public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
-                Log.d("TRIPLOG", "Click on item list" + e.getActionIndex());
+                Log.d("TRIPLOG", "Touch on item list" + e.getActionIndex());
             }
 
             @Override
             public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+                Log.d("TRIPLOG", "onRequestDisallowInterceptTouchEvent");
 
             }
         });
@@ -91,7 +94,7 @@ public class UserProfileFragment extends Fragment {
             startActivity(new Intent(getContext(), Login.class));
         });
 
-        return view;
+        return userProfileView;
     }
 
     private void reloadData() {
@@ -143,6 +146,15 @@ public class UserProfileFragment extends Fragment {
             }
 
             holder.deleteButton.setOnClickListener(imageView -> TripModel.instance.removeTrip(trip, () -> Log.d("TRIPLOG", "trip named " + trip.getName() + " deleted")));
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    UserProfileFragmentDirections.ActionUserProfileToTripDetails action = UserProfileFragmentDirections.actionUserProfileToTripDetails(trip);
+                    Navigation.findNavController(userProfileView).navigate(action);
+                }
+            });
+            holder.itemView.setClickable(true);
         }
 
         @Override
@@ -172,6 +184,4 @@ public class UserProfileFragment extends Fragment {
             }
         }
     }
-
-
 }

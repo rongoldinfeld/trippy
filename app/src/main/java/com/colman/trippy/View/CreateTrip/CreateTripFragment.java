@@ -215,7 +215,8 @@ public class CreateTripFragment extends Fragment implements AdapterView.OnItemSe
                         fromDate,
                         untilDate,
                         privateSwitch.isChecked(),
-                        updatedLocations), () -> Navigation.findNavController(saveTripBtn).popBackStack());
+                        updatedLocations,
+                        true), () -> Navigation.findNavController(saveTripBtn).popBackStack());
             }
 
             @Override

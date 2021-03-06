@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout5"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".View.TripDetails.TripDetailsFragment">
+
+    <ImageView
+        android:id="@+id/trip_details_private_lock"
+        android:layout_width="wrap_content"
+        android:layout_height="56dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/ic_lock"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <ImageView
+        android:id="@+id/trip_details_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="56dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/ic_baseline_edit_24"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/trip_details_private_lock"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/trip_details_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="56dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/ic_baseline_delete_24"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/trip_details_edit"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/trip_details_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:editable="false"
+        android:text="TextView"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/trip_detail_date_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/dates_title"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/trip_details_name" />
+
+    <TextView
+        android:id="@+id/trip_detail_participants_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/participants_title"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/trip_detail_date_title" />
+
+    <TextView
+        android:id="@+id/trip_detail_dates"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:text="TextView"
+        app:layout_constraintStart_toEndOf="@+id/trip_detail_date_title"
+        app:layout_constraintTop_toBottomOf="@id/trip_details_name" />
+
+    <TextView
+        android:id="@+id/trip_detail_participants"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:editable="false"
+        android:text="TextView"
+        app:layout_constraintStart_toEndOf="@+id/trip_detail_participants_title"
+        app:layout_constraintTop_toBottomOf="@id/trip_detail_date_title" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="194dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/trip_detail_participants_title" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
