@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.colman.trippy.AppConsts.sdf;
-import static com.colman.trippy.Trippy.context;
 
 public class UserProfileFragment extends Fragment {
     TripViewModel viewModel;
@@ -116,30 +115,34 @@ public class UserProfileFragment extends Fragment {
         @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void onBindViewHolder(@NonNull TripItemViewHolder holder, int position) {
-            Trip t = viewModel.getTripList().getValue().get(position);
-            String fromDate = sdf.format(t.getFromDate());
-            String untilDate = sdf.format(t.getUntilDate());
+            Trip trip = viewModel.getTripList().getValue().get(position);
+            String fromDate = sdf.format(trip.getFromDate());
+            String untilDate = sdf.format(trip.getUntilDate());
             String participants;
-            if (t.getParticipantsEmails().size() > 1) {
-                participants = t.getParticipantsEmails().get(0).substring(0, 3).concat("... +" + (t.getParticipantsEmails().size() - 1));
+            if (trip.getParticipantsEmails().size() > 1) {
+                participants = trip.getParticipantsEmails().get(0).substring(0, 3).concat("... +" + (trip.getParticipantsEmails().size() - 1));
             } else {
-                participants = t.getParticipantsEmails().stream().collect(Collectors.joining(","));
+                participants = trip.getParticipantsEmails().stream().collect(Collectors.joining(","));
             }
 
-            holder.tripName.setText(t.getName());
-            holder.dates.setText(fromDate + " - " + untilDate);
+            holder.tripName.setText(trip.getName());
+            holder.dates.setText(String.format("%s - %s", fromDate, untilDate));
             holder.participants.setText(participants);
-            if (t.isTripPrivate()) {
+            if (trip.isTripPrivate()) {
                 holder.isPrivateLock.setVisibility(View.VISIBLE);
             }
 
+            holder.deleteButton.setVisibility(View.VISIBLE);
+
             holder.linearLayout.removeAllViews();
-            for (Location loc : t.getLocations()) {
+            for (Location loc : trip.getLocations()) {
                 ImageView imageView = new ImageView(getContext());
                 imageView.setPadding(10, 0, 10, 0);
                 Picasso.get().load(loc.getImageUrl()).resize(100, 100).into(imageView);
                 holder.linearLayout.addView(imageView);
             }
+
+            holder.deleteButton.setOnClickListener(imageView -> TripModel.instance.removeTrip(trip, () -> Log.d("TRIPLOG", "trip named " + trip.getName() + " deleted")));
         }
 
         @Override
@@ -156,6 +159,7 @@ public class UserProfileFragment extends Fragment {
             TextView participants;
             ImageView isPrivateLock;
             LinearLayout linearLayout;
+            ImageView deleteButton;
 
             public TripItemViewHolder(View itemView) {
                 super(itemView);
@@ -164,6 +168,7 @@ public class UserProfileFragment extends Fragment {
                 participants = itemView.findViewById(R.id.participants_text);
                 isPrivateLock = itemView.findViewById(R.id.is_private_lock);
                 linearLayout = itemView.findViewById(R.id.image_linear_layout);
+                deleteButton = itemView.findViewById(R.id.delete_button);
             }
         }
     }

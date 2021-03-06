@@ -112,7 +112,7 @@ public class TripSearchFragment extends Fragment {
             }
 
             holder.tripName.setText(trip.getName());
-            holder.dates.setText(fromDate + " - " + untilDate);
+            holder.dates.setText(String.format("%s - %s", fromDate, untilDate));
             holder.participants.setText(participants);
             if (trip.isTripPrivate()) {
                 holder.isPrivateLock.setVisibility(View.VISIBLE);

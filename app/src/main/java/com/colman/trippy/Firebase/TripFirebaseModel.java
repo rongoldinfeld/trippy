@@ -5,9 +5,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-
 import com.colman.trippy.AppConsts;
 import com.colman.trippy.Model.Trip;
 import com.colman.trippy.Model.User;
@@ -25,16 +22,13 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Collectors;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 public class TripFirebaseModel {
     FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
@@ -89,7 +83,18 @@ public class TripFirebaseModel {
         });
     }
 
-    //TODO: Implement delete trip
+    public void removeTrip(Trip trip, final AppConsts.Listener<Boolean> listener) {
+        String userId = firebaseAuth.getCurrentUser().getUid();
+        DocumentReference currentUserRef = fireStore.collection("users").document(userId);
+        currentUserRef.update("trips", FieldValue.arrayRemove(trip.toMap())).addOnSuccessListener((result) -> {
+            Log.d("TRIPLOG", "(Firebase) Updating trips of user " + userId + " done with success");
+            listener.onComplete(true);
+        }).addOnFailureListener((Exception result) -> {
+            Log.d("TRIPLOG", "(Firebase) Updating trips of user " + userId + " failed. Reason: " + result.getMessage());
+            listener.onComplete(false);
+        });
+    }
+
 
     //TODO: Implement update trip
 

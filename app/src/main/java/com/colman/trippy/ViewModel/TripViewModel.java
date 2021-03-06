@@ -1,7 +1,5 @@
 package com.colman.trippy.ViewModel;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
