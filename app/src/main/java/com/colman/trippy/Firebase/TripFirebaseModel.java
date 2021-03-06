@@ -130,8 +130,9 @@ public class TripFirebaseModel {
                 if (task.isSuccessful()) {
                     ArrayList<Trip> trips = new ArrayList<>();
                     for (QueryDocumentSnapshot document : task.getResult()) {
+                        boolean isFilterPrivate = !document.toObject(User.class).getEmail().equals(firebaseAuth.getCurrentUser().getEmail());
                         trips.addAll(document.toObject(User.class).getTrips().stream()
-                                .filter(trip -> !trip.isTripPrivate())
+                                .filter(trip -> !(isFilterPrivate && trip.isTripPrivate()))
                                 .filter(trip -> trip.getName().toLowerCase().contains(query.toLowerCase()))
                                 .collect(Collectors.toList()));
                         Log.d("TRIPLOG", "(Firebase)" + document.getId() + " => " + document.getData());
