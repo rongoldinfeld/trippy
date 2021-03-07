@@ -6,15 +6,19 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 @Entity
-public class Trip {
+public class Trip implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @PrimaryKey
     @NonNull
     private String name;
+    private boolean isCurrentUser;
 
     @TypeConverters(StringListConverter.class)
     private ArrayList<String> participantsEmails;
@@ -28,12 +32,13 @@ public class Trip {
     private Long dataVersion;
 
     @Ignore
-    public Trip(ArrayList<String> participantsEmails, String name, long fromDate, long untilDate, boolean isTripPrivate, ArrayList<Location> locations) {
+    public Trip(ArrayList<String> participantsEmails, String name, long fromDate, long untilDate, boolean isTripPrivate, ArrayList<Location> locations, boolean isCurrentUser) {
         this.participantsEmails = participantsEmails;
         this.name = name;
         this.fromDate = fromDate;
         this.untilDate = untilDate;
         this.isTripPrivate = isTripPrivate;
+        this.isCurrentUser = isCurrentUser;
         this.locations = locations;
     }
 
@@ -49,6 +54,7 @@ public class Trip {
         result.put("untilDate", this.untilDate);
         result.put("tripPrivate", this.isTripPrivate);
         result.put("locations", this.locations);
+        result.put("isCurrentUser", this.isCurrentUser);
         if (this.dataVersion != null) {
             result.put("dataVersion", this.dataVersion);
         } else {
@@ -65,6 +71,7 @@ public class Trip {
         this.untilDate = (long) map.get("untilDate");
         this.isTripPrivate = (Boolean) map.get("tripPrivate");
         this.locations = (ArrayList<Location>) map.get("locations");
+        this.isCurrentUser = (Boolean) map.get("isCurrentUser");
         this.dataVersion = (long) map.get("dataVersion");
         ;
     }
@@ -87,6 +94,14 @@ public class Trip {
 
     public long getUntilDate() {
         return untilDate;
+    }
+
+    public boolean isCurrentUser() {
+        return isCurrentUser;
+    }
+
+    public void setCurrentUser(boolean currentUser) {
+        isCurrentUser = currentUser;
     }
 
     public void setUntilDate(long untilDate) {

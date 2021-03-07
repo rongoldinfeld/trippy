@@ -1,7 +1,5 @@
 package com.colman.trippy.View.Home.Search;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,23 +11,20 @@ import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 
-import com.colman.trippy.AppConsts;
 import com.colman.trippy.Model.Location;
 import com.colman.trippy.Model.SearchModel;
 import com.colman.trippy.Model.Trip;
 import com.colman.trippy.R;
-import com.colman.trippy.Trippy;
 import com.colman.trippy.ViewModel.SearchViewModel;
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -41,12 +36,13 @@ public class TripSearchFragment extends Fragment {
     SearchViewModel searchViewModel;
     SearchTripListAdapter adapter;
     ProgressBar progressBar;
+    View searchViewFragment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View searchViewFragment = inflater.inflate(R.layout.fragment_trip_search, container, false);
+        searchViewFragment = inflater.inflate(R.layout.fragment_trip_search, container, false);
 
         searchView = searchViewFragment.findViewById(R.id.search_input);
         searchView.setIconifiedByDefault(false);
@@ -125,6 +121,15 @@ public class TripSearchFragment extends Fragment {
                 Picasso.get().load(loc.getImageUrl()).resize(100, 100).into(imageView);
                 holder.linearLayout.addView(imageView);
             }
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    TripSearchFragmentDirections.ActionTripSearchToTripDetails action = TripSearchFragmentDirections.actionTripSearchToTripDetails(trip);
+                    Navigation.findNavController(searchViewFragment).navigate(action);
+                }
+            });
+            holder.itemView.setClickable(true);
         }
 
         @Override

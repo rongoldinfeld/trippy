@@ -11,4 +11,6 @@
     <string name="toggle_private">Private</string>
     <string name="edit_image">Edit Image</string>
     <string name="search_trip">Search trips</string>
+    <string name="dates_title">Dates:</string>
+    <string name="participants_title">Participants:</string>
 </resources>

@@ -2,16 +2,22 @@
   "formatVersion": 1,
   "database": {
     "version": 5,
-    "identityHash": "7c06dada80165e46465679a381be65f4",
+    "identityHash": "c19037d4409069e4f1e0840077192120",
     "entities": [
       {
         "tableName": "Trip",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `participantsEmails` TEXT, `fromDate` INTEGER NOT NULL, `untilDate` INTEGER NOT NULL, `isTripPrivate` INTEGER NOT NULL, `locations` TEXT, `dataVersion` INTEGER, PRIMARY KEY(`name`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `isCurrentUser` INTEGER NOT NULL, `participantsEmails` TEXT, `fromDate` INTEGER NOT NULL, `untilDate` INTEGER NOT NULL, `isTripPrivate` INTEGER NOT NULL, `locations` TEXT, `dataVersion` INTEGER, PRIMARY KEY(`name`))",
         "fields": [
           {
             "fieldPath": "name",
             "columnName": "name",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isCurrentUser",
+            "columnName": "isCurrentUser",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -64,7 +70,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7c06dada80165e46465679a381be65f4')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c19037d4409069e4f1e0840077192120')"
     ]
   }
 }

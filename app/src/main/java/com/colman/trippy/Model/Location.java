@@ -1,6 +1,10 @@
 package com.colman.trippy.Model;
 
-public class Location {
+import java.io.Serializable;
+
+public class Location implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private long dateVisited;
     private String locationName;
     private String imageUrl;

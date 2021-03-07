@@ -25,6 +25,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
@@ -47,6 +48,7 @@ public class TripFirebaseModel {
                     User user = result.toObject(User.class);
                     data = user.getTrips();
                     data.stream().filter(trip -> trip.getDataVersion() > dataVersion);
+                    data.forEach(trip -> trip.setCurrentUser(true));
                 }
 
                 listener.onComplete(data);
@@ -136,10 +138,14 @@ public class TripFirebaseModel {
                     ArrayList<Trip> trips = new ArrayList<>();
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         boolean isFilterPrivate = !document.toObject(User.class).getEmail().equals(firebaseAuth.getCurrentUser().getEmail());
-                        trips.addAll(document.toObject(User.class).getTrips().stream()
+                        List<Trip> userTrips = document.toObject(User.class).getTrips().stream()
                                 .filter(trip -> !(isFilterPrivate && trip.isTripPrivate()))
                                 .filter(trip -> trip.getName().toLowerCase().contains(query.toLowerCase()))
-                                .collect(Collectors.toList()));
+                                .collect(Collectors.toList());
+                        if (!isFilterPrivate) {
+                            userTrips.forEach(trip -> trip.setCurrentUser(true));
+                        }
+                        trips.addAll(userTrips);
                         Log.d("TRIPLOG", "(Firebase)" + document.getId() + " => " + document.getData());
                     }
                     listener.onComplete(trips);
