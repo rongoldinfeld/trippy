@@ -2,6 +2,7 @@ package com.colman.trippy.View.Home.Search;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -116,10 +117,12 @@ public class TripSearchFragment extends Fragment {
 
             holder.linearLayout.removeAllViews();
             for (Location loc : trip.getLocations()) {
-                ImageView imageView = new ImageView(getContext());
-                imageView.setPadding(10, 0, 10, 0);
-                Picasso.get().load(loc.getImageUrl()).resize(100, 100).into(imageView);
-                holder.linearLayout.addView(imageView);
+                if (!TextUtils.equals(loc.getImageUrl(), "")) {
+                    ImageView imageView = new ImageView(getContext());
+                    imageView.setPadding(10, 0, 10, 0);
+                    Picasso.get().load(loc.getImageUrl()).resize(100, 100).into(imageView);
+                    holder.linearLayout.addView(imageView);
+                }
             }
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {

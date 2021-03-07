@@ -2,6 +2,7 @@ package com.colman.trippy.View.TripDetails;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -101,10 +102,12 @@ public class TripDetailsFragment extends Fragment {
             holder.dateVisited.setText(sdf.format(location.getDateVisited()));
 
             holder.linearLayout.removeAllViews();
-            ImageView imageView = new ImageView(getContext());
-            imageView.setPadding(0, 10, 0, 0);
-            Picasso.get().load(location.getImageUrl()).resize(700, 500).into(imageView);
-            holder.linearLayout.addView(imageView);
+            if (!TextUtils.equals(location.getImageUrl(), "")) {
+                ImageView imageView = new ImageView(getContext());
+                imageView.setPadding(0, 10, 0, 0);
+                Picasso.get().load(location.getImageUrl()).resize(700, 500).into(imageView);
+                holder.linearLayout.addView(imageView);
+            }
         }
 
         @Override

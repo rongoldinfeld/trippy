@@ -183,6 +183,7 @@ public class CreateTripFragment extends Fragment implements AdapterView.OnItemSe
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onClick(View view) {
         if (mTripName.getText().toString().trim().length() == 0) {
@@ -200,30 +201,45 @@ public class CreateTripFragment extends Fragment implements AdapterView.OnItemSe
             return;
         }
 
-        TripModel.instance.uploadImages(adapter.getLocations(), new AppConsts.Listener<ArrayList<String>>() {
-            @Override
-            public void onComplete(ArrayList<String> result) {
-                ArrayList<Location> updatedLocations = new ArrayList<>();
-                for (int i = 0; i < adapter.getLocations().size(); i++) {
-                    Location location = adapter.getLocations().get(i);
-                    updatedLocations.add(new Location(location.getDateVisited(), location.getLocationName(), result.get(i)));
+        boolean shouldUploadImages = adapter.getLocations().stream().anyMatch(location -> !TextUtils.equals(location.getImageUrl(), ""));
+
+        if (shouldUploadImages) {
+            TripModel.instance.uploadImages(adapter.getLocations(), new AppConsts.Listener<ArrayList<String>>() {
+                @Override
+                public void onComplete(ArrayList<String> result) {
+                    ArrayList<Location> locations = new ArrayList<>();
+
+                    for (int i = 0; i < adapter.getLocations().size(); i++) {
+                        Location location = adapter.getLocations().get(i);
+                        locations.add(new Location(location.getDateVisited(), location.getLocationName(), result.get(i)));
+                    }
+
+                    TripModel.instance.addTrip(new Trip(
+                            participantsEmails,
+                            mTripName.getText().toString().trim(),
+                            fromDate,
+                            untilDate,
+                            privateSwitch.isChecked(),
+                            locations,
+                            true), () -> Navigation.findNavController(saveTripBtn).popBackStack());
                 }
 
-                TripModel.instance.addTrip(new Trip(
-                        participantsEmails,
-                        mTripName.getText().toString().trim(),
-                        fromDate,
-                        untilDate,
-                        privateSwitch.isChecked(),
-                        updatedLocations,
-                        true), () -> Navigation.findNavController(saveTripBtn).popBackStack());
-            }
-
-            @Override
-            public void onFailure(String message) {
-                Toast.makeText(getContext(), "Failed to upload your images..." + message, Toast.LENGTH_LONG).show();
-            }
-        });
+                @Override
+                public void onFailure(String message) {
+                    Toast.makeText(getContext(), "Failed to upload your images..." + message, Toast.LENGTH_LONG).show();
+                }
+            });
+        } else {
+            ArrayList<Location> locations = adapter.getLocations();
+            TripModel.instance.addTrip(new Trip(
+                    participantsEmails,
+                    mTripName.getText().toString().trim(),
+                    fromDate,
+                    untilDate,
+                    privateSwitch.isChecked(),
+                    locations,
+                    true), () -> Navigation.findNavController(saveTripBtn).popBackStack());
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
