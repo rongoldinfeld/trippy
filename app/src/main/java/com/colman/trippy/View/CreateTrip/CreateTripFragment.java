@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,7 @@ import com.colman.trippy.Model.TripModel;
 import com.colman.trippy.Model.User;
 import com.colman.trippy.Model.UserModel;
 import com.colman.trippy.R;
+import com.colman.trippy.View.TripDetails.TripDetailsFragmentArgs;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -47,6 +49,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.stream.Collectors;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -66,6 +69,7 @@ public class CreateTripFragment extends Fragment implements AdapterView.OnItemSe
     String[] allEmails;
     LocationsListAdapter adapter;
     RecyclerView rv;
+    Trip initialTrip;
 
     ArrayList<String> participantsEmails;
     long fromDate;
@@ -77,6 +81,7 @@ public class CreateTripFragment extends Fragment implements AdapterView.OnItemSe
         void onChange(long date);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -112,7 +117,29 @@ public class CreateTripFragment extends Fragment implements AdapterView.OnItemSe
         saveTripBtn.setOnClickListener(this);
         handleRecyclerView(view, adapter);
 
+        this.initialTrip = CreateTripFragmentArgs.fromBundle(getArguments()).getTripInfo();
+        if (this.initialTrip != null) {
+            this.populateTripForm(this.initialTrip);
+        }
+
         return view;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void populateTripForm(Trip trip) {
+        mTripName.setText(trip.getName());
+        privateSwitch.setChecked(trip.isTripPrivate());
+        fromDatePicker.setText(AppConsts.sdf.format(trip.getFromDate()));
+        fromDate = trip.getFromDate();
+        untilDatePicker.setText(AppConsts.sdf.format(trip.getUntilDate()));
+        untilDate = trip.getUntilDate();
+        adapter.setLocations(trip.getLocations());
+        adapter.notifyDataSetChanged();
+        trip.getParticipantsEmails().forEach(email -> {
+            participantsEmails.add(email);
+            chipGroup.addView(createEmailChip(email));
+        });
+        adapter.notifyDataSetChanged();
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -201,27 +228,26 @@ public class CreateTripFragment extends Fragment implements AdapterView.OnItemSe
             return;
         }
 
-        boolean shouldUploadImages = adapter.getLocations().stream().anyMatch(location -> !TextUtils.equals(location.getImageUrl(), ""));
 
-        if (shouldUploadImages) {
+        boolean isAllImagesEmpty = !adapter.getLocations().stream().anyMatch(location -> !TextUtils.equals(location.getImageUrl(), ""));
+        if (!isAllImagesEmpty) {
             TripModel.instance.uploadImages(adapter.getLocations(), new AppConsts.Listener<ArrayList<String>>() {
                 @Override
                 public void onComplete(ArrayList<String> result) {
-                    ArrayList<Location> locations = new ArrayList<>();
-
-                    for (int i = 0; i < adapter.getLocations().size(); i++) {
-                        Location location = adapter.getLocations().get(i);
-                        locations.add(new Location(location.getDateVisited(), location.getLocationName(), result.get(i)));
-                    }
-
-                    TripModel.instance.addTrip(new Trip(
+                    Trip tripToCreateOrUpdate = new Trip(
                             participantsEmails,
                             mTripName.getText().toString().trim(),
                             fromDate,
                             untilDate,
                             privateSwitch.isChecked(),
-                            locations,
-                            true), () -> Navigation.findNavController(saveTripBtn).popBackStack());
+                            adapter.getLocations(),
+                            true);
+                    if (initialTrip == null) {
+                        TripModel.instance.addTrip(tripToCreateOrUpdate, () -> Navigation.findNavController(saveTripBtn).popBackStack());
+                    } else {
+                        tripToCreateOrUpdate.setDataVersion(initialTrip.getDataVersion() + 1);
+                        TripModel.instance.updateTrip(initialTrip, tripToCreateOrUpdate, () -> Navigation.findNavController(saveTripBtn).navigate(R.id.action_createTrip_to_userProfileFragment));
+                    }
                 }
 
                 @Override
@@ -231,14 +257,20 @@ public class CreateTripFragment extends Fragment implements AdapterView.OnItemSe
             });
         } else {
             ArrayList<Location> locations = adapter.getLocations();
-            TripModel.instance.addTrip(new Trip(
+            Trip tripToCreateOrUpdate = new Trip(
                     participantsEmails,
                     mTripName.getText().toString().trim(),
                     fromDate,
                     untilDate,
                     privateSwitch.isChecked(),
                     locations,
-                    true), () -> Navigation.findNavController(saveTripBtn).popBackStack());
+                    true);
+            if (initialTrip == null) {
+                TripModel.instance.addTrip(tripToCreateOrUpdate, () -> Navigation.findNavController(saveTripBtn).popBackStack());
+            } else {
+                tripToCreateOrUpdate.setDataVersion(initialTrip.getDataVersion() + 1);
+                TripModel.instance.updateTrip(initialTrip, tripToCreateOrUpdate, () -> Navigation.findNavController(saveTripBtn).navigate(R.id.action_createTrip_to_userProfileFragment));
+            }
         }
     }
 

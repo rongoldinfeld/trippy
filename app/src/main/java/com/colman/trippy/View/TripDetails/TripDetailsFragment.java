@@ -15,6 +15,7 @@ import com.colman.trippy.Model.Location;
 import com.colman.trippy.Model.Trip;
 import com.colman.trippy.Model.TripModel;
 import com.colman.trippy.R;
+import com.colman.trippy.View.Home.Search.TripSearchFragmentDirections;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -32,6 +33,7 @@ import static com.colman.trippy.AppConsts.sdf;
 public class TripDetailsFragment extends Fragment {
     RecyclerView recyclerView;
     TripDetailsListAdapter adapter;
+    View detailsViewFragment;
     Trip trip;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -39,7 +41,7 @@ public class TripDetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View detailsViewFragment = inflater.inflate(R.layout.fragment_trip_details, container, false);
+        detailsViewFragment = inflater.inflate(R.layout.fragment_trip_details, container, false);
         trip = TripDetailsFragmentArgs.fromBundle(getArguments()).getTrip();
 
         TextView tripName = detailsViewFragment.findViewById(R.id.trip_details_name);
@@ -75,6 +77,10 @@ public class TripDetailsFragment extends Fragment {
             editButton.setVisibility(View.VISIBLE);
             deleteButton.setVisibility(View.VISIBLE);
         }
+
+        editButton.setOnClickListener(view -> {
+            TripDetailsFragmentDirections.ActionTripDetailsFragmentToCreateTrip action = TripDetailsFragmentDirections.actionTripDetailsFragmentToCreateTrip().setTripInfo(trip);            Navigation.findNavController(detailsViewFragment).navigate(action);
+        });
 
         recyclerView = detailsViewFragment.findViewById(R.id.trip_detail_location_list);
         recyclerView.hasFixedSize();

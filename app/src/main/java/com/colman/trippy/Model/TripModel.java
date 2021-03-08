@@ -89,10 +89,10 @@ public class TripModel {
             public void onComplete(Boolean result) {
                 Log.d("TRIPLOG", "Successfully deleted trip with result: " + result.toString());
                 tripSqlModel.deleteTrip(trip, () ->
-                refreshTrips(() -> {
-                    Log.d("TRIPLOG", "Refreshing trips after deletion, succeeded");
-                    listener.onComplete();
-                }));
+                        refreshTrips(() -> {
+                            Log.d("TRIPLOG", "Refreshing trips after deletion, succeeded");
+                            listener.onComplete();
+                        }));
             }
 
             @Override
@@ -106,26 +106,46 @@ public class TripModel {
     public void uploadImages(ArrayList<Location> locations, AppConsts.Listener<ArrayList<String>> listener) {
         ArrayList<String> imageUrls = new ArrayList<>();
         final int[] uploadCounter = {0};
+        final int[] expectedToUpload = {locations.size()};
         for (Location location : locations) {
-            tripFirebaseModel.uploadImage(BitmapFactory.decodeFile(location.getImageUrl()), location.getLocationName() + " " + location.getDateVisited(), new AppConsts.Listener<String>() {
-                @Override
-                public void onComplete(String result) {
-                    Log.d("TRIPLOG", "Done uploading image for location: " + location.getLocationName());
-                    imageUrls.add(result);
-                    uploadCounter[0]++;
 
-                    if (uploadCounter[0] == locations.size()) {
-                        listener.onComplete(imageUrls);
+            if (!location.getImageUrl().contains("firebase")) {
+                tripFirebaseModel.uploadImage(BitmapFactory.decodeFile(location.getImageUrl()), location.getLocationName() + " " + location.getDateVisited(), new AppConsts.Listener<String>() {
+                    @Override
+                    public void onComplete(String result) {
+                        Log.d("TRIPLOG", "Done uploading image for location: " + location.getLocationName());
+                        imageUrls.add(result);
+                        location.setImageUrl(result);
+                        uploadCounter[0]++;
+
+                        if (uploadCounter[0] == expectedToUpload[0]) {
+                            listener.onComplete(imageUrls);
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(String message) {
-                    Log.d("TRIPLOG", "Failed uploading image for location: " + location.getLocationName());
-                    listener.onFailure(message);
+                    @Override
+                    public void onFailure(String message) {
+                        Log.d("TRIPLOG", "Failed uploading image for location: " + location.getLocationName());
+                        listener.onFailure(message);
+                    }
+                });
+            } else {
+                expectedToUpload[0]--;
+                if (uploadCounter[0] == expectedToUpload[0]) {
+                    listener.onComplete(imageUrls);
                 }
-            });
+            }
         }
 
+    }
+
+    public void updateTrip(Trip initialTrip, Trip tripToUpdate, AppConsts.OnCompleteListener listener) {
+        this.removeTrip(initialTrip, () -> {
+            Log.d("TRIPLOG", "Removed trip... now inserting a new one");
+            this.addTrip(tripToUpdate, () -> {
+                Log.d("TRIPLOG", "Added trips and refreshed db");
+                listener.onComplete();
+            });
+        });
     }
 }

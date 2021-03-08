@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.colman.trippy.Model.Location;
 import com.colman.trippy.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -57,7 +59,7 @@ public class LocationsListAdapter extends RecyclerView.Adapter<LocationsListAdap
         }
     }
 
-    private final ArrayList<Location> locationDataSet;
+    private ArrayList<Location> locationDataSet;
 
     private long minDate;
     private long maxDate;
@@ -113,6 +115,12 @@ public class LocationsListAdapter extends RecyclerView.Adapter<LocationsListAdap
             });
             builder.show();
         });
+
+        String locationImageUrl = locationDataSet.get(position).getImageUrl();
+        if (!TextUtils.equals(locationImageUrl, "")) {
+            Picasso.get().load(locationImageUrl).resize(100, 100).into(viewHolder.image);
+            viewHolder.image.setVisibility(View.VISIBLE);
+        }
     }
 
     private void openDatePickerDialog(View view, EditText mField, int position) {
@@ -154,9 +162,19 @@ public class LocationsListAdapter extends RecyclerView.Adapter<LocationsListAdap
         return this.locationDataSet;
     }
 
+    public void setLocations(ArrayList<Location> newList) {
+        this.locationDataSet = newList;
+    }
+
     public void setImage(ViewHolder viewHolder, int position, String picturePath) {
-        viewHolder.image.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-        viewHolder.image.setVisibility(View.VISIBLE);
-        this.locationDataSet.get(position).setImageUrl(picturePath);
+        if (!TextUtils.equals(picturePath, "")) {
+            this.locationDataSet.get(position).setImageUrl(picturePath);
+            if (!picturePath.contains("firebase")) {
+                picturePath = "file://" + picturePath;
+            }
+
+            Picasso.get().load(picturePath).resize(100, 100).into(viewHolder.image);
+            viewHolder.image.setVisibility(View.VISIBLE);
+        }
     }
 }

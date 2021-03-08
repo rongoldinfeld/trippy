@@ -29,7 +29,16 @@
         android:id="@+id/createTrip"
         android:name="com.colman.trippy.View.CreateTrip.CreateTripFragment"
         android:label="fragment_create_trip"
-        tools:layout="@layout/fragment_create_trip" />
+        tools:layout="@layout/fragment_create_trip" >
+        <argument
+            android:name="tripInfo"
+            app:argType="com.colman.trippy.Model.Trip"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_createTrip_to_userProfileFragment"
+            app:destination="@id/userProfileFragment" />
+    </fragment>
     <fragment
         android:id="@+id/tripDetailsFragment"
         android:name="com.colman.trippy.View.TripDetails.TripDetailsFragment"
@@ -38,5 +47,8 @@
         <argument
             android:name="trip"
             app:argType="com.colman.trippy.Model.Trip" />
+        <action
+            android:id="@+id/action_tripDetailsFragment_to_createTrip"
+            app:destination="@id/createTrip" />
     </fragment>
 </navigation>
