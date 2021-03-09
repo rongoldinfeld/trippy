@@ -2,6 +2,7 @@ package com.colman.trippy.View.TripDetails;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.colman.trippy.Model.Location;
 import com.colman.trippy.Model.Trip;
 import com.colman.trippy.Model.TripModel;
 import com.colman.trippy.R;
+import com.colman.trippy.View.Home.Search.TripSearchFragmentDirections;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -31,6 +33,7 @@ import static com.colman.trippy.AppConsts.sdf;
 public class TripDetailsFragment extends Fragment {
     RecyclerView recyclerView;
     TripDetailsListAdapter adapter;
+    View detailsViewFragment;
     Trip trip;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -38,7 +41,7 @@ public class TripDetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View detailsViewFragment = inflater.inflate(R.layout.fragment_trip_details, container, false);
+        detailsViewFragment = inflater.inflate(R.layout.fragment_trip_details, container, false);
         trip = TripDetailsFragmentArgs.fromBundle(getArguments()).getTrip();
 
         TextView tripName = detailsViewFragment.findViewById(R.id.trip_details_name);
@@ -75,6 +78,10 @@ public class TripDetailsFragment extends Fragment {
             deleteButton.setVisibility(View.VISIBLE);
         }
 
+        editButton.setOnClickListener(view -> {
+            TripDetailsFragmentDirections.ActionTripDetailsFragmentToCreateTrip action = TripDetailsFragmentDirections.actionTripDetailsFragmentToCreateTrip().setTripInfo(trip);            Navigation.findNavController(detailsViewFragment).navigate(action);
+        });
+
         recyclerView = detailsViewFragment.findViewById(R.id.trip_detail_location_list);
         recyclerView.hasFixedSize();
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -101,10 +108,12 @@ public class TripDetailsFragment extends Fragment {
             holder.dateVisited.setText(sdf.format(location.getDateVisited()));
 
             holder.linearLayout.removeAllViews();
-            ImageView imageView = new ImageView(getContext());
-            imageView.setPadding(0, 10, 0, 0);
-            Picasso.get().load(location.getImageUrl()).resize(700, 500).into(imageView);
-            holder.linearLayout.addView(imageView);
+            if (!TextUtils.equals(location.getImageUrl(), "")) {
+                ImageView imageView = new ImageView(getContext());
+                imageView.setPadding(0, 10, 0, 0);
+                Picasso.get().load(location.getImageUrl()).resize(700, 500).into(imageView);
+                holder.linearLayout.addView(imageView);
+            }
         }
 
         @Override

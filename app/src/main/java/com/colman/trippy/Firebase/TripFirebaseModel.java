@@ -60,10 +60,10 @@ public class TripFirebaseModel {
         String userId = firebaseAuth.getCurrentUser().getUid();
         DocumentReference currentUserRef = fireStore.collection("users").document(userId);
         currentUserRef.update("trips", FieldValue.arrayUnion(trip.toMap())).addOnSuccessListener((result) -> {
-            Log.d("TRIPLOG", "(Firebase) Updating trips of user " + userId + " done with success");
+            Log.d("TRIPLOG", "(Firebase) Adding trips for user " + userId + " done with success");
             listener.onComplete(true);
         }).addOnFailureListener((Exception result) -> {
-            Log.d("TRIPLOG", "(Firebase) Updating trips of user " + userId + " failed. Reason: " + result.getMessage());
+            Log.d("TRIPLOG", "(Firebase) Adding trips for user " + userId + " failed. Reason: " + result.getMessage());
             listener.onComplete(false);
         });
     }
@@ -89,18 +89,13 @@ public class TripFirebaseModel {
         String userId = firebaseAuth.getCurrentUser().getUid();
         DocumentReference currentUserRef = fireStore.collection("users").document(userId);
         currentUserRef.update("trips", FieldValue.arrayRemove(trip.toMap())).addOnSuccessListener((result) -> {
-            Log.d("TRIPLOG", "(Firebase) Updating trips of user " + userId + " done with success");
+            Log.d("TRIPLOG", "(Firebase) Deleting trips of user " + userId + " done with success");
             listener.onComplete(true);
         }).addOnFailureListener((Exception result) -> {
-            Log.d("TRIPLOG", "(Firebase) Updating trips of user " + userId + " failed. Reason: " + result.getMessage());
+            Log.d("TRIPLOG", "(Firebase) Deleting trips of user " + userId + " failed. Reason: " + result.getMessage());
             listener.onComplete(false);
         });
     }
-
-
-    //TODO: Implement update trip
-
-    //TODO: Implement uploadImage
 
     public void uploadImage(Bitmap imageBmp, String name, final AppConsts.Listener<String> listener) {
         FirebaseStorage storage = FirebaseStorage.getInstance();

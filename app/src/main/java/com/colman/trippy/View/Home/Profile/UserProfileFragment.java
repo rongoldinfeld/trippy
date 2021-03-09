@@ -3,6 +3,7 @@ package com.colman.trippy.View.Home.Profile;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -139,10 +140,12 @@ public class UserProfileFragment extends Fragment {
 
             holder.linearLayout.removeAllViews();
             for (Location loc : trip.getLocations()) {
-                ImageView imageView = new ImageView(getContext());
-                imageView.setPadding(10, 0, 10, 0);
-                Picasso.get().load(loc.getImageUrl()).resize(100, 100).into(imageView);
-                holder.linearLayout.addView(imageView);
+                if (!TextUtils.equals(loc.getImageUrl(), "")) {
+                    ImageView imageView = new ImageView(getContext());
+                    imageView.setPadding(10, 0, 10, 0);
+                    Picasso.get().load(loc.getImageUrl()).resize(100, 100).into(imageView);
+                    holder.linearLayout.addView(imageView);
+                }
             }
 
             holder.deleteButton.setOnClickListener(imageView -> TripModel.instance.removeTrip(trip, () -> Log.d("TRIPLOG", "trip named " + trip.getName() + " deleted")));
