@@ -27,6 +27,7 @@ import com.colman.trippy.AppConsts;
 import com.colman.trippy.Model.Location;
 import com.colman.trippy.Model.Trip;
 import com.colman.trippy.Model.TripModel;
+import com.colman.trippy.Model.User;
 import com.colman.trippy.Model.UserModel;
 import com.colman.trippy.R;
 import com.colman.trippy.View.Login;
@@ -40,6 +41,7 @@ import static com.colman.trippy.AppConsts.sdf;
 public class UserProfileFragment extends Fragment {
     TripViewModel viewModel;
     ImageView logoutButton;
+    TextView currentUser;
     View userProfileView;
     ProgressBar pb;
     SwipeRefreshLayout sref;
@@ -61,6 +63,18 @@ public class UserProfileFragment extends Fragment {
         sref.setOnRefreshListener(() -> {
             sref.setRefreshing(true);
             reloadData();
+        });
+
+        currentUser = userProfileView.findViewById(R.id.profile_user_name);
+        UserModel.instance.getCurrentUser(new AppConsts.Listener<User>() {
+            @Override
+            public void onComplete(User user) {
+                currentUser.setText(user.getFullName());
+            }
+
+            @Override
+            public void onFailure(String message) {
+            }
         });
 
         rv.setAdapter(adapter);
