@@ -138,9 +138,9 @@ public class TripFirebaseModel {
                 if (task.isSuccessful()) {
                     ArrayList<Trip> trips = new ArrayList<>();
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        boolean isFilterPrivate = !(document.toObject(User.class).getEmail().equals(firebaseAuth.getCurrentUser().getEmail()));
+                        boolean isOwner = document.toObject(User.class).getEmail().equals(firebaseAuth.getCurrentUser().getEmail());
                         List<Trip> userTrips = document.toObject(User.class).getTrips().stream()
-                                .filter(trip -> !(isFilterPrivate && trip.isTripPrivate()))
+                                .filter(trip -> (!trip.isTripPrivate() || (isOwner || trip.getParticipantsEmails().contains(firebaseAuth.getCurrentUser().getEmail()))))
                                 .filter(trip -> trip.getName().toLowerCase().contains(query.toLowerCase()))
                                 .collect(Collectors.toList());
                         userTrips.forEach(trip -> {
@@ -149,9 +149,6 @@ public class TripFirebaseModel {
                                 trip.setCurrentUser(true);
                             }
                         });
-                        if (!isFilterPrivate) {
-                            userTrips.forEach(trip -> trip.setCurrentUser(true));
-                        }
                         trips.addAll(userTrips);
                         Log.d("TRIPLOG", "(Firebase)" + document.getId() + " => " + document.getData());
                     }

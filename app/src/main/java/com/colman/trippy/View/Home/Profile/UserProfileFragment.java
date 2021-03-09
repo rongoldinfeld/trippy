@@ -42,7 +42,6 @@ public class UserProfileFragment extends Fragment {
     TripViewModel viewModel;
     ImageView logoutButton;
     TextView userGreeting;
-    TextView currentUser;
     View userProfileView;
     ProgressBar pb;
     SwipeRefreshLayout sref;
@@ -65,18 +64,6 @@ public class UserProfileFragment extends Fragment {
         sref.setOnRefreshListener(() -> {
             sref.setRefreshing(true);
             reloadData();
-        });
-
-        currentUser = userProfileView.findViewById(R.id.profile_user_name);
-        UserModel.instance.getCurrentUser(new AppConsts.Listener<User>() {
-            @Override
-            public void onComplete(User user) {
-                currentUser.setText(user.getFullName());
-            }
-
-            @Override
-            public void onFailure(String message) {
-            }
         });
 
         rv.setAdapter(adapter);
