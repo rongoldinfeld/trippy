@@ -5,7 +5,6 @@ import com.colman.trippy.Firebase.UserFirebaseModel;
 
 public class UserModel {
     public final static UserModel instance = new UserModel();
-
     UserFirebaseModel modelFirebase = new UserFirebaseModel();
 
     private UserModel() {
@@ -32,8 +31,11 @@ public class UserModel {
         modelFirebase.login(email, password, listener);
     }
 
-    public void logout() {
-        modelFirebase.logout();
+    public void logout(AppConsts.OnCompleteListener listener) {
+        TripModel.instance.dropTripTable(() -> {
+            modelFirebase.logout();
+            listener.onComplete();
+        });
     }
 
     public interface IsLoggedInListener extends AppConsts.Listener<Boolean> {
