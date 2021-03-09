@@ -110,7 +110,6 @@ public class TripDetailsFragment extends Fragment {
             holder.linearLayout.removeAllViews();
             if (!TextUtils.equals(location.getImageUrl(), "")) {
                 ImageView imageView = new ImageView(getContext());
-                imageView.setPadding(0, 10, 0, 0);
                 AppConsts.loadPicture(location.getImageUrl(), 700, 500, imageView);
                 holder.linearLayout.addView(imageView);
             }
