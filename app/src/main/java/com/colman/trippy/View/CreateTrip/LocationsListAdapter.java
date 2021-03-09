@@ -2,8 +2,6 @@ package com.colman.trippy.View.CreateTrip;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -13,24 +11,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.colman.trippy.AppConsts;
 import com.colman.trippy.Model.Location;
 import com.colman.trippy.R;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import android.graphics.Bitmap;
-import android.widget.ImageView;
-
-import static android.app.Activity.RESULT_OK;
 import static com.colman.trippy.AppConsts.getLongFromDate;
 import static com.colman.trippy.AppConsts.sdf;
 
@@ -118,7 +112,7 @@ public class LocationsListAdapter extends RecyclerView.Adapter<LocationsListAdap
 
         String locationImageUrl = locationDataSet.get(position).getImageUrl();
         if (!TextUtils.equals(locationImageUrl, "")) {
-            Picasso.get().load(locationImageUrl).resize(100, 100).into(viewHolder.image);
+            AppConsts.loadPicture(locationImageUrl, 100, 100, viewHolder.image);
             viewHolder.image.setVisibility(View.VISIBLE);
         }
     }
@@ -173,7 +167,7 @@ public class LocationsListAdapter extends RecyclerView.Adapter<LocationsListAdap
                 picturePath = "file://" + picturePath;
             }
 
-            Picasso.get().load(picturePath).resize(100, 100).into(viewHolder.image);
+            AppConsts.loadPicture(picturePath, 100, 100, viewHolder.image);
             viewHolder.image.setVisibility(View.VISIBLE);
         }
     }
