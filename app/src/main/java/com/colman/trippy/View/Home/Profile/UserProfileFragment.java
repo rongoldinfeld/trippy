@@ -133,6 +133,8 @@ public class UserProfileFragment extends Fragment {
             holder.participants.setText(participants);
             if (trip.isTripPrivate()) {
                 holder.isPrivateLock.setVisibility(View.VISIBLE);
+            } else {
+                holder.isPrivateLock.setVisibility(View.INVISIBLE);
             }
 
             holder.deleteButton.setVisibility(View.VISIBLE);

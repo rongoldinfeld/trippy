@@ -13,7 +13,7 @@ import java.util.List;
 
 @Dao
 public interface TripDao {
-    @Query("select * from Trip")
+    @Query("select * from Trip order by fromDate ASC")
     LiveData<List<Trip>> getAllTrips();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
