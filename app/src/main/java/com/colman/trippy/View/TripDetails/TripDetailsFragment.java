@@ -11,22 +11,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.colman.trippy.Model.Location;
-import com.colman.trippy.Model.Trip;
-import com.colman.trippy.Model.TripModel;
-import com.colman.trippy.R;
-import com.colman.trippy.View.Home.Search.TripSearchFragmentDirections;
-import com.squareup.picasso.Picasso;
-
-import java.text.SimpleDateFormat;
-import java.util.stream.Collectors;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.colman.trippy.AppConsts;
+import com.colman.trippy.Model.Location;
+import com.colman.trippy.Model.Trip;
+import com.colman.trippy.Model.TripModel;
+import com.colman.trippy.R;
+
+import java.text.SimpleDateFormat;
+import java.util.stream.Collectors;
 
 import static com.colman.trippy.AppConsts.sdf;
 
@@ -79,7 +78,8 @@ public class TripDetailsFragment extends Fragment {
         }
 
         editButton.setOnClickListener(view -> {
-            TripDetailsFragmentDirections.ActionTripDetailsFragmentToCreateTrip action = TripDetailsFragmentDirections.actionTripDetailsFragmentToCreateTrip().setTripInfo(trip);            Navigation.findNavController(detailsViewFragment).navigate(action);
+            TripDetailsFragmentDirections.ActionTripDetailsFragmentToCreateTrip action = TripDetailsFragmentDirections.actionTripDetailsFragmentToCreateTrip().setTripInfo(trip);
+            Navigation.findNavController(detailsViewFragment).navigate(action);
         });
 
         recyclerView = detailsViewFragment.findViewById(R.id.trip_detail_location_list);
@@ -111,7 +111,7 @@ public class TripDetailsFragment extends Fragment {
             if (!TextUtils.equals(location.getImageUrl(), "")) {
                 ImageView imageView = new ImageView(getContext());
                 imageView.setPadding(0, 10, 0, 0);
-                Picasso.get().load(location.getImageUrl()).resize(700, 500).into(imageView);
+                AppConsts.loadPicture(location.getImageUrl(), 700, 500, imageView);
                 holder.linearLayout.addView(imageView);
             }
         }

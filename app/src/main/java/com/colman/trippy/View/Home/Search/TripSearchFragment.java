@@ -12,15 +12,6 @@ import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 
-import com.colman.trippy.Model.Location;
-import com.colman.trippy.Model.SearchModel;
-import com.colman.trippy.Model.Trip;
-import com.colman.trippy.R;
-import com.colman.trippy.ViewModel.SearchViewModel;
-import com.squareup.picasso.Picasso;
-
-import java.util.stream.Collectors;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
@@ -28,6 +19,15 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.colman.trippy.AppConsts;
+import com.colman.trippy.Model.Location;
+import com.colman.trippy.Model.SearchModel;
+import com.colman.trippy.Model.Trip;
+import com.colman.trippy.R;
+import com.colman.trippy.ViewModel.SearchViewModel;
+
+import java.util.stream.Collectors;
 
 import static com.colman.trippy.AppConsts.sdf;
 
@@ -81,7 +81,7 @@ public class TripSearchFragment extends Fragment {
         return searchViewFragment;
     }
 
-    private  void refreshSearchData(String searchValue) {
+    private void refreshSearchData(String searchValue) {
         progressBar.setVisibility(View.VISIBLE);
         SearchModel.instance.searchTrips(searchValue);
     }
@@ -120,7 +120,7 @@ public class TripSearchFragment extends Fragment {
                 if (!TextUtils.equals(loc.getImageUrl(), "")) {
                     ImageView imageView = new ImageView(getContext());
                     imageView.setPadding(10, 0, 10, 0);
-                    Picasso.get().load(loc.getImageUrl()).resize(100, 100).into(imageView);
+                    AppConsts.loadPicture(loc.getImageUrl(), 100, 100, imageView);
                     holder.linearLayout.addView(imageView);
                 }
             }

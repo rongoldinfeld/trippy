@@ -23,15 +23,14 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.colman.trippy.AppConsts;
 import com.colman.trippy.Model.Location;
 import com.colman.trippy.Model.Trip;
 import com.colman.trippy.Model.TripModel;
 import com.colman.trippy.Model.UserModel;
 import com.colman.trippy.R;
-import com.colman.trippy.View.Home.Search.TripSearchFragmentDirections;
 import com.colman.trippy.View.Login;
 import com.colman.trippy.ViewModel.TripViewModel;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -143,7 +142,7 @@ public class UserProfileFragment extends Fragment {
                 if (!TextUtils.equals(loc.getImageUrl(), "")) {
                     ImageView imageView = new ImageView(getContext());
                     imageView.setPadding(10, 0, 10, 0);
-                    Picasso.get().load(loc.getImageUrl()).resize(100, 100).into(imageView);
+                    AppConsts.loadPicture(loc.getImageUrl(), 100, 100, imageView);
                     holder.linearLayout.addView(imageView);
                 }
             }
