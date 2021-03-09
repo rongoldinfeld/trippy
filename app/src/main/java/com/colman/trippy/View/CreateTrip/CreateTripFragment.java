@@ -135,6 +135,8 @@ public class CreateTripFragment extends Fragment implements AdapterView.OnItemSe
         fromDate = trip.getFromDate();
         untilDatePicker.setText(AppConsts.sdf.format(trip.getUntilDate()));
         untilDate = trip.getUntilDate();
+        adapter.setMinDate(fromDate);
+        adapter.setMaxDate(untilDate);
         adapter.setLocations(trip.getLocations());
         adapter.notifyDataSetChanged();
         trip.getParticipantsEmails().forEach(email -> {
@@ -346,7 +348,7 @@ public class CreateTripFragment extends Fragment implements AdapterView.OnItemSe
     }
 
     private void toggleCreateProgressBar(boolean on) {
-        if(on) {
+        if (on) {
             saveTripPb.setVisibility(View.VISIBLE);
             saveTripBtn.setVisibility(View.INVISIBLE);
         } else {
