@@ -11,46 +11,51 @@
         android:id="@+id/trip_details_private_lock"
         android:layout_width="wrap_content"
         android:layout_height="56dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginTop="8dp"
         android:src="@drawable/ic_lock"
         android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/trip_details_edit"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintStart_toEndOf="@+id/trip_details_edit"
+        app:layout_constraintTop_toTopOf="@+id/trip_details_edit"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
         android:id="@+id/trip_details_edit"
         android:layout_width="wrap_content"
         android:layout_height="56dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginTop="8dp"
         android:src="@drawable/ic_baseline_edit_24"
         android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/trip_details_delete"
         app:layout_constraintEnd_toStartOf="@+id/trip_details_private_lock"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/trip_details_delete"
+        app:layout_constraintTop_toTopOf="@+id/trip_details_delete"
+        app:layout_constraintVertical_bias="1.0" />
 
     <ImageView
         android:id="@+id/trip_details_delete"
         android:layout_width="wrap_content"
         android:layout_height="56dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="8dp"
         android:src="@drawable/ic_baseline_delete_24"
         android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/trip_details_name"
         app:layout_constraintEnd_toStartOf="@+id/trip_details_edit"
-        app:layout_constraintHorizontal_chainStyle="spread_inside"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toEndOf="@+id/trip_details_name"
+        app:layout_constraintTop_toTopOf="@+id/trip_details_name" />
 
     <TextView
         android:id="@+id/trip_details_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
         android:editable="false"
         android:text="TextView"
         android:textSize="24sp"
@@ -105,9 +110,9 @@
         android:id="@+id/trip_detail_location_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
         android:paddingBottom="200dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

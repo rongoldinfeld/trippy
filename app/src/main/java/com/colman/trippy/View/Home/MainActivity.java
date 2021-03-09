@@ -4,11 +4,15 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 
 import com.colman.trippy.Model.UserModel;
@@ -18,12 +22,12 @@ import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity {
     NavController mNavController;
+    TextView currentPage;
     private static final int REQUEST_WRITE_STORAGE = 112;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         UserModel.instance.isLoggedIn(new UserModel.IsLoggedInListener() {
             @Override
             public void onComplete(Boolean result) {
@@ -50,12 +54,15 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{
                     android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_STORAGE);
         }
+
+
     }
 
     private void initiateTabLayout() {
         setContentView(R.layout.activity_main);
         TabLayout tabLayout = findViewById(R.id.app_tab_layout);
         mNavController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        currentPage = findViewById(R.id.current_page_label);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -74,6 +81,11 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("TRIPLOG", "Tab reselected with position " + tab.getPosition());
                 mNavController.navigate(getNavigationActionByPosition(tab.getPosition()));
             }
+        });
+
+
+        mNavController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            currentPage.setText(destination.getLabel());
         });
     }
 

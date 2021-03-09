@@ -13,8 +13,6 @@ import com.colman.trippy.Firebase.TripFirebaseModel;
 import com.colman.trippy.Sql.TripSqlModel;
 import com.colman.trippy.Trippy;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -150,5 +148,9 @@ public class TripModel {
                 listener.onComplete();
             });
         });
+    }
+
+    public void dropTripTable(AppConsts.OnCompleteListener listener) {
+        this.tripSqlModel.dropTripTable(listener);
     }
 }

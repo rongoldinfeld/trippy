@@ -42,6 +42,7 @@ public class LocationsListAdapter extends RecyclerView.Adapter<LocationsListAdap
         public EditText locationName, locationDate;
         public Button editImageButton;
         public ImageView image;
+        public ImageView removeLocationIcon;
 
         public ViewHolder(View view, Fragment mFragment) {
             super(view);
@@ -50,6 +51,8 @@ public class LocationsListAdapter extends RecyclerView.Adapter<LocationsListAdap
             locationDate = view.findViewById(R.id.location_date);
             editImageButton = view.findViewById(R.id.edit_image_button);
             image = view.findViewById(R.id.image_view);
+            removeLocationIcon = view.findViewById(R.id.remove_location_icon);
+
         }
     }
 
@@ -115,6 +118,11 @@ public class LocationsListAdapter extends RecyclerView.Adapter<LocationsListAdap
             AppConsts.loadPicture(locationImageUrl, 100, 100, viewHolder.image);
             viewHolder.image.setVisibility(View.VISIBLE);
         }
+
+        viewHolder.removeLocationIcon.setOnClickListener(view -> {
+            locationDataSet.remove(position);
+            notifyItemRemoved(position);
+        });
     }
 
     private void openDatePickerDialog(View view, EditText mField, int position) {

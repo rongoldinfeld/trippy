@@ -7,48 +7,48 @@
     <fragment
         android:id="@+id/tripSearchFragment"
         android:name="com.colman.trippy.View.Home.Search.TripSearchFragment"
-        android:label="fragment_trip_search"
-        tools:layout="@layout/fragment_trip_search" >
+        android:label="Search"
+        tools:layout="@layout/fragment_trip_search">
         <action
             android:id="@+id/action_tripSearch_to_tripDetails"
             app:destination="@id/tripDetailsFragment" />
     </fragment>
-    <fragment
+    <action android:id="@+id/action_global_userProfileFragment" app:destination="@id/userProfileFragment"/><fragment
         android:id="@+id/userProfileFragment"
         android:name="com.colman.trippy.View.Home.Profile.UserProfileFragment"
-        android:label="fragment_user_profile"
-        tools:layout="@layout/fragment_user_profile" >
+        android:label="Profile"
+        tools:layout="@layout/fragment_user_profile">
         <action
             android:id="@+id/action_userProfile_to_createTrip"
             app:destination="@id/createTrip" />
         <action
             android:id="@+id/action_userProfile_to_tripDetails"
             app:destination="@id/tripDetailsFragment" />
-    </fragment><action android:id="@+id/action_global_userProfileFragment" app:destination="@id/userProfileFragment"/><action android:id="@+id/action_global_tripSearchFragment" app:destination="@id/tripSearchFragment"/>
+    </fragment><action android:id="@+id/action_global_tripSearchFragment" app:destination="@id/tripSearchFragment"/>
     <fragment
         android:id="@+id/createTrip"
         android:name="com.colman.trippy.View.CreateTrip.CreateTripFragment"
-        android:label="fragment_create_trip"
-        tools:layout="@layout/fragment_create_trip" >
-        <argument
-            android:name="tripInfo"
-            app:argType="com.colman.trippy.Model.Trip"
-            app:nullable="true"
-            android:defaultValue="@null" />
+        android:label="Create"
+        tools:layout="@layout/fragment_create_trip">
         <action
             android:id="@+id/action_createTrip_to_userProfileFragment"
             app:destination="@id/userProfileFragment" />
+        <argument
+            android:name="tripInfo"
+            android:defaultValue="@null"
+            app:argType="com.colman.trippy.Model.Trip"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/tripDetailsFragment"
         android:name="com.colman.trippy.View.TripDetails.TripDetailsFragment"
-        android:label="fragment_trip_details"
+        android:label="Details"
         tools:layout="@layout/fragment_trip_details">
-        <argument
-            android:name="trip"
-            app:argType="com.colman.trippy.Model.Trip" />
         <action
             android:id="@+id/action_tripDetailsFragment_to_createTrip"
             app:destination="@id/createTrip" />
+        <argument
+            android:name="trip"
+            app:argType="com.colman.trippy.Model.Trip" />
     </fragment>
 </navigation>

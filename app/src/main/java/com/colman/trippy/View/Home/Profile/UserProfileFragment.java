@@ -41,6 +41,7 @@ import static com.colman.trippy.AppConsts.sdf;
 public class UserProfileFragment extends Fragment {
     TripViewModel viewModel;
     ImageView logoutButton;
+    TextView userGreeting;
     TextView currentUser;
     View userProfileView;
     ProgressBar pb;
@@ -52,6 +53,7 @@ public class UserProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         userProfileView = inflater.inflate(R.layout.fragment_user_profile, container, false);
         logoutButton = userProfileView.findViewById(R.id.logout_image);
+        userGreeting = userProfileView.findViewById(R.id.user_greeting);
         viewModel = new ViewModelProvider(this).get(TripViewModel.class);
         RecyclerView rv = userProfileView.findViewById(R.id.user_trips_list);
         UserTripListAdapter adapter = new UserTripListAdapter();
@@ -104,10 +106,24 @@ public class UserProfileFragment extends Fragment {
         });
 
         logoutButton.setOnClickListener(imageView -> {
-            UserModel.instance.logout();
-            startActivity(new Intent(getContext(), Login.class));
+            UserModel.instance.logout(() -> {
+                startActivity(new Intent(getContext(), Login.class));
+            });
         });
 
+        UserModel.instance.getCurrentUser(new AppConsts.Listener<User>() {
+            @Override
+            public void onComplete(User result) {
+                userGreeting.setText("Hey there " + result.getFullName());
+            }
+
+            @Override
+            public void onFailure(String message) {
+                Log.d("TRIPLOG", "Failed to get user profile, couldn't show greetings to user");
+            }
+        });
+
+        reloadData();
         return userProfileView;
     }
 
