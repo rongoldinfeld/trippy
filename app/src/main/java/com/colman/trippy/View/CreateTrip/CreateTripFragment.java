@@ -64,6 +64,7 @@ public class CreateTripFragment extends Fragment implements AdapterView.OnItemSe
     Spinner participantsSpinner;
     ChipGroup chipGroup;
     ProgressBar participantsPb;
+    ProgressBar saveTripPb;
     ArrayAdapter<String> participantsAdapter;
     Calendar calendar = Calendar.getInstance();
     String[] allEmails;
@@ -94,6 +95,7 @@ public class CreateTripFragment extends Fragment implements AdapterView.OnItemSe
         participantsSpinner = view.findViewById(R.id.participants_spinner);
         chipGroup = view.findViewById(R.id.participants_list);
         participantsPb = view.findViewById(R.id.participants_pb);
+        saveTripPb = view.findViewById(R.id.save_trip_pb);
         isSpinnerFirstCall = true;
 
         participantsEmails = new ArrayList<>();
@@ -213,18 +215,22 @@ public class CreateTripFragment extends Fragment implements AdapterView.OnItemSe
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onClick(View view) {
+        this.toggleCreateProgressBar(true);
         if (mTripName.getText().toString().trim().length() == 0) {
             mTripName.setError("You must enter trip name!");
+            this.toggleCreateProgressBar(false);
             return;
         }
 
         if (fromDate == 0L) {
             fromDatePicker.setError("Please your trip from date!");
+            this.toggleCreateProgressBar(false);
             return;
         }
 
         if (untilDate == 0L) {
             untilDatePicker.setError("Please your trip until date!");
+            this.toggleCreateProgressBar(false);
             return;
         }
 
@@ -253,6 +259,7 @@ public class CreateTripFragment extends Fragment implements AdapterView.OnItemSe
                 @Override
                 public void onFailure(String message) {
                     Toast.makeText(getContext(), "Failed to upload your images..." + message, Toast.LENGTH_LONG).show();
+                    toggleCreateProgressBar(false);
                 }
             });
         } else {
@@ -335,6 +342,16 @@ public class CreateTripFragment extends Fragment implements AdapterView.OnItemSe
                     }
                 }
             }
+        }
+    }
+
+    private void toggleCreateProgressBar(boolean on) {
+        if(on) {
+            saveTripPb.setVisibility(View.VISIBLE);
+            saveTripBtn.setVisibility(View.INVISIBLE);
+        } else {
+            saveTripPb.setVisibility(View.INVISIBLE);
+            saveTripBtn.setVisibility(View.VISIBLE);
         }
     }
 }

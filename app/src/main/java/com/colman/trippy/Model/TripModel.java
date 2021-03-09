@@ -3,6 +3,7 @@ package com.colman.trippy.Model;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
+import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -11,6 +12,8 @@ import com.colman.trippy.AppConsts;
 import com.colman.trippy.Firebase.TripFirebaseModel;
 import com.colman.trippy.Sql.TripSqlModel;
 import com.colman.trippy.Trippy;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,7 +112,7 @@ public class TripModel {
         final int[] expectedToUpload = {locations.size()};
         for (Location location : locations) {
 
-            if (!location.getImageUrl().contains("firebase")) {
+            if (!location.getImageUrl().contains("firebase") && !TextUtils.equals(location.getImageUrl(), "")) {
                 tripFirebaseModel.uploadImage(BitmapFactory.decodeFile(location.getImageUrl()), location.getLocationName() + " " + location.getDateVisited(), new AppConsts.Listener<String>() {
                     @Override
                     public void onComplete(String result) {
