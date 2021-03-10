@@ -6,6 +6,7 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,7 +95,9 @@ public class LocationsListAdapter extends RecyclerView.Adapter<LocationsListAdap
 
             @Override
             public void afterTextChanged(Editable editable) {
-                locationDataSet.get(position).setLocationName(editable.toString());
+                if (position < locationDataSet.size()) {
+                    locationDataSet.get(position).setLocationName(editable.toString());
+                }
             }
         });
 
@@ -120,8 +123,13 @@ public class LocationsListAdapter extends RecyclerView.Adapter<LocationsListAdap
         }
 
         viewHolder.removeLocationIcon.setOnClickListener(view -> {
-            locationDataSet.remove(position);
-            notifyItemRemoved(position);
+            if (position < locationDataSet.size()) {
+                locationDataSet.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, getItemCount());
+            } else {
+                Log.d("TRIPLOG", "Tried to delete location of non existing index: " + position + " array size is: " + locationDataSet.size());
+            }
         });
     }
 

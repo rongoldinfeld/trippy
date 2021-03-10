@@ -14,4 +14,5 @@
     <string name="dates_title">Dates:</string>
     <string name="participants_title">Participants:</string>
     <string name="profile_header">Profile</string>
+    <string name="owner_title">Owner:</string>
 </resources>
