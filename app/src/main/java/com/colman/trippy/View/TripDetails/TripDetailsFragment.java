@@ -46,6 +46,9 @@ public class TripDetailsFragment extends Fragment {
         TextView tripName = detailsViewFragment.findViewById(R.id.trip_details_name);
         tripName.setText(trip.getName());
 
+        TextView tripOwner = detailsViewFragment.findViewById(R.id.trip_details_owner);
+        tripOwner.setText(trip.getOwnerUser());
+
         TextView datesView = detailsViewFragment.findViewById(R.id.trip_detail_dates);
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         String fromDate = sdf.format(trip.getFromDate());

@@ -36,22 +36,28 @@ public class TripFirebaseModel {
     FirebaseFirestore fireStore = FirebaseFirestore.getInstance();
 
     public void getAllTrips(Long dataVersion, final AppConsts.Listener<ArrayList<Trip>> listener) {
-        String userId = firebaseAuth.getCurrentUser().getUid();
-        fireStore.collection("users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        fireStore.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                ArrayList<Trip> data = new ArrayList<Trip>();
-
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    DocumentSnapshot result = task.getResult();
-                    User user = result.toObject(User.class);
-                    data = user.getTrips();
-                    data.stream().filter(trip -> trip.getDataVersion() > dataVersion);
-                    data.forEach(trip -> trip.setCurrentUser(true));
+                    ArrayList<Trip> trips = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        boolean isOwner = (document.toObject(User.class).getEmail().equals(firebaseAuth.getCurrentUser().getEmail()));
+                        List<Trip> userTrips = document.toObject(User.class).getTrips().stream()
+                                .filter(trip -> (isOwner || trip.getParticipantsEmails().contains(firebaseAuth.getCurrentUser().getEmail())))
+                                .collect(Collectors.toList());
+                        userTrips.forEach(trip -> {
+                            trip.setCurrentUser(true);
+                            trip.setOwnerUser(document.toObject(User.class).getEmail());
+                        });
+                        trips.addAll(userTrips);
+                        Log.d("TRIPLOG", "(Firebase)" + document.getId() + " => " + document.getData());
+                    }
+                    listener.onComplete(trips);
+                } else {
+                    Log.d("TRIPLOG", "(Firebase) Error getting documents: ", task.getException());
                 }
-
-                listener.onComplete(data);
             }
         });
     }
@@ -132,14 +138,17 @@ public class TripFirebaseModel {
                 if (task.isSuccessful()) {
                     ArrayList<Trip> trips = new ArrayList<>();
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        boolean isFilterPrivate = !document.toObject(User.class).getEmail().equals(firebaseAuth.getCurrentUser().getEmail());
+                        boolean isOwner = document.toObject(User.class).getEmail().equals(firebaseAuth.getCurrentUser().getEmail());
                         List<Trip> userTrips = document.toObject(User.class).getTrips().stream()
-                                .filter(trip -> !(isFilterPrivate && trip.isTripPrivate()))
+                                .filter(trip -> (!trip.isTripPrivate() || (isOwner || trip.getParticipantsEmails().contains(firebaseAuth.getCurrentUser().getEmail()))))
                                 .filter(trip -> trip.getName().toLowerCase().contains(query.toLowerCase()))
                                 .collect(Collectors.toList());
-                        if (!isFilterPrivate) {
-                            userTrips.forEach(trip -> trip.setCurrentUser(true));
-                        }
+                        userTrips.forEach(trip -> {
+                            trip.setOwnerUser(document.toObject(User.class).getEmail());
+                            if (trip.getParticipantsEmails().contains(firebaseAuth.getCurrentUser().getEmail())) {
+                                trip.setCurrentUser(true);
+                            }
+                        });
                         trips.addAll(userTrips);
                         Log.d("TRIPLOG", "(Firebase)" + document.getId() + " => " + document.getData());
                     }

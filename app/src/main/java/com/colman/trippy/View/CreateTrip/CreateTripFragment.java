@@ -64,6 +64,7 @@ public class CreateTripFragment extends Fragment implements AdapterView.OnItemSe
     LocationsListAdapter adapter;
     RecyclerView rv;
     Trip initialTrip;
+    User currentUser;
 
     ArrayList<String> participantsEmails;
     long fromDate;
@@ -108,6 +109,17 @@ public class CreateTripFragment extends Fragment implements AdapterView.OnItemSe
 
         participantsPb.setVisibility(View.VISIBLE);
         UserModel.instance.getAllUserEmails(this);
+        UserModel.instance.getCurrentUser(new AppConsts.Listener<User>() {
+            @Override
+            public void onComplete(User user) {
+                currentUser = user;
+            }
+
+            @Override
+            public void onFailure(String message) {
+                Toast.makeText(getContext(), "Problem getting user", Toast.LENGTH_SHORT).show();
+            }
+        });
         participantsSpinner.setOnItemSelectedListener(this);
         saveTripBtn.setOnClickListener(this);
         handleRecyclerView(view, adapter);
@@ -242,7 +254,8 @@ public class CreateTripFragment extends Fragment implements AdapterView.OnItemSe
                             untilDate,
                             privateSwitch.isChecked(),
                             adapter.getLocations(),
-                            true);
+                            true,
+                            currentUser != null ? currentUser.getEmail() : null);
                     if (initialTrip == null) {
                         TripModel.instance.addTrip(tripToCreateOrUpdate, () -> Navigation.findNavController(saveTripBtn).popBackStack());
                     } else {
@@ -266,7 +279,8 @@ public class CreateTripFragment extends Fragment implements AdapterView.OnItemSe
                     untilDate,
                     privateSwitch.isChecked(),
                     locations,
-                    true);
+                    true,
+                    currentUser != null ? currentUser.getEmail() : null);
             if (initialTrip == null) {
                 TripModel.instance.addTrip(tripToCreateOrUpdate, () -> Navigation.findNavController(saveTripBtn).popBackStack());
             } else {

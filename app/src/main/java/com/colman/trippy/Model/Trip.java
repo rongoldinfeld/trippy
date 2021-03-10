@@ -19,6 +19,7 @@ public class Trip implements Serializable {
     @NonNull
     private String name;
     private boolean isCurrentUser;
+    private String ownerUser;
 
     @TypeConverters(StringListConverter.class)
     private ArrayList<String> participantsEmails;
@@ -32,13 +33,14 @@ public class Trip implements Serializable {
     private Long dataVersion;
 
     @Ignore
-    public Trip(ArrayList<String> participantsEmails, String name, long fromDate, long untilDate, boolean isTripPrivate, ArrayList<Location> locations, boolean isCurrentUser) {
+    public Trip(ArrayList<String> participantsEmails, String name, long fromDate, long untilDate, boolean isTripPrivate, ArrayList<Location> locations, boolean isCurrentUser, String ownerUser) {
         this.participantsEmails = participantsEmails;
         this.name = name;
         this.fromDate = fromDate;
         this.untilDate = untilDate;
         this.isTripPrivate = isTripPrivate;
         this.isCurrentUser = isCurrentUser;
+        this.ownerUser = ownerUser;
         this.locations = locations;
     }
 
@@ -55,6 +57,7 @@ public class Trip implements Serializable {
         result.put("tripPrivate", this.isTripPrivate);
         result.put("locations", this.locations);
         result.put("isCurrentUser", this.isCurrentUser);
+        result.put("ownerUser", this.ownerUser);
         if (this.dataVersion != null) {
             result.put("dataVersion", this.dataVersion);
         } else {
@@ -72,6 +75,7 @@ public class Trip implements Serializable {
         this.isTripPrivate = (Boolean) map.get("tripPrivate");
         this.locations = (ArrayList<Location>) map.get("locations");
         this.isCurrentUser = (Boolean) map.get("isCurrentUser");
+        this.ownerUser = (String) map.get("ownerUser");
         this.dataVersion = (long) map.get("dataVersion");
         ;
     }
@@ -102,6 +106,14 @@ public class Trip implements Serializable {
 
     public void setCurrentUser(boolean currentUser) {
         isCurrentUser = currentUser;
+    }
+
+    public String getOwnerUser() {
+        return ownerUser;
+    }
+
+    public void setOwnerUser(String ownerUser) {
+        this.ownerUser = ownerUser;
     }
 
     public void setUntilDate(long untilDate) {
