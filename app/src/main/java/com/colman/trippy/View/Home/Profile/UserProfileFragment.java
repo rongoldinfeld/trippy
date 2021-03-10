@@ -102,6 +102,7 @@ public class UserProfileFragment extends Fragment {
             @Override
             public void onComplete(User result) {
                 userGreeting.setText("Hey there " + result.getFullName());
+                adapter.setCurrentUser(result);
             }
 
             @Override
@@ -124,6 +125,8 @@ public class UserProfileFragment extends Fragment {
 
 
     class UserTripListAdapter extends RecyclerView.Adapter<UserTripListAdapter.TripItemViewHolder> {
+
+        private User currentUser;
 
         @NonNull
         @Override
@@ -154,7 +157,11 @@ public class UserProfileFragment extends Fragment {
                 holder.isPrivateLock.setVisibility(View.INVISIBLE);
             }
 
-            holder.deleteButton.setVisibility(View.VISIBLE);
+            if (this.currentUser != null && TextUtils.equals(trip.getOwnerUser(), this.currentUser.getEmail())) {
+                holder.deleteButton.setVisibility(View.VISIBLE);
+            } else {
+                holder.deleteButton.setVisibility(View.INVISIBLE);
+            }
 
             holder.linearLayout.removeAllViews();
             for (Location loc : trip.getLocations()) {
@@ -168,12 +175,9 @@ public class UserProfileFragment extends Fragment {
 
             holder.deleteButton.setOnClickListener(imageView -> TripModel.instance.removeTrip(trip, () -> Log.d("TRIPLOG", "trip named " + trip.getName() + " deleted")));
 
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    UserProfileFragmentDirections.ActionUserProfileToTripDetails action = UserProfileFragmentDirections.actionUserProfileToTripDetails(trip);
-                    Navigation.findNavController(userProfileView).navigate(action);
-                }
+            holder.itemView.setOnClickListener(view -> {
+                UserProfileFragmentDirections.ActionUserProfileToTripDetails action = UserProfileFragmentDirections.actionUserProfileToTripDetails(trip);
+                Navigation.findNavController(userProfileView).navigate(action);
             });
             holder.itemView.setClickable(true);
         }
@@ -203,6 +207,10 @@ public class UserProfileFragment extends Fragment {
                 linearLayout = itemView.findViewById(R.id.image_linear_layout);
                 deleteButton = itemView.findViewById(R.id.delete_button);
             }
+        }
+
+        public void setCurrentUser(User currentUser) {
+            this.currentUser = currentUser;
         }
     }
 }

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -22,6 +23,8 @@ import com.colman.trippy.AppConsts;
 import com.colman.trippy.Model.Location;
 import com.colman.trippy.Model.Trip;
 import com.colman.trippy.Model.TripModel;
+import com.colman.trippy.Model.User;
+import com.colman.trippy.Model.UserModel;
 import com.colman.trippy.R;
 
 import java.text.SimpleDateFormat;
@@ -75,10 +78,20 @@ public class TripDetailsFragment extends Fragment {
             Navigation.findNavController(deleteButton).popBackStack();
         }));
 
-        if (trip.isCurrentUser()) {
-            editButton.setVisibility(View.VISIBLE);
-            deleteButton.setVisibility(View.VISIBLE);
-        }
+        UserModel.instance.getCurrentUser(new AppConsts.Listener<User>() {
+            @Override
+            public void onComplete(User result) {
+                if (TextUtils.equals(trip.getOwnerUser(), result.getEmail())) {
+                    editButton.setVisibility(View.VISIBLE);
+                    deleteButton.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onFailure(String message) {
+                Toast.makeText(getContext(), "Couldn't load user profile, edit and delete is prohibited", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         editButton.setOnClickListener(view -> {
             TripDetailsFragmentDirections.ActionTripDetailsFragmentToCreateTrip action = TripDetailsFragmentDirections.actionTripDetailsFragmentToCreateTrip().setTripInfo(trip);
@@ -95,6 +108,7 @@ public class TripDetailsFragment extends Fragment {
     }
 
     class TripDetailsListAdapter extends RecyclerView.Adapter<LocationItemViewHolder> {
+
         @NonNull
         @Override
         public LocationItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
