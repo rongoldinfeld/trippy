@@ -117,6 +117,7 @@ public class CreateTripFragment extends Fragment implements AdapterView.OnItemSe
 
             @Override
             public void onFailure(String message) {
+                Toast.makeText(getContext(), "Problem getting user", Toast.LENGTH_SHORT).show();
             }
         });
         participantsSpinner.setOnItemSelectedListener(this);
@@ -254,7 +255,7 @@ public class CreateTripFragment extends Fragment implements AdapterView.OnItemSe
                             privateSwitch.isChecked(),
                             adapter.getLocations(),
                             true,
-                            currentUser.getEmail());
+                            currentUser != null ? currentUser.getEmail() : null);
                     if (initialTrip == null) {
                         TripModel.instance.addTrip(tripToCreateOrUpdate, () -> Navigation.findNavController(saveTripBtn).popBackStack());
                     } else {
@@ -279,7 +280,7 @@ public class CreateTripFragment extends Fragment implements AdapterView.OnItemSe
                     privateSwitch.isChecked(),
                     locations,
                     true,
-                    currentUser.getEmail());
+                    currentUser != null ? currentUser.getEmail() : null);
             if (initialTrip == null) {
                 TripModel.instance.addTrip(tripToCreateOrUpdate, () -> Navigation.findNavController(saveTripBtn).popBackStack());
             } else {
